@@ -2,8 +2,9 @@
 
 # Установка зависимостей
 install:
-	cd frontend && npm install
 	npm install
+	cd frontend && npm install
+
 
 # Сборка фронтенда
 build:
