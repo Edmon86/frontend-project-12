@@ -5,7 +5,6 @@ install:
 	npm install
 	cd frontend && npm install
 
-
 # Сборка фронтенда
 build:
 	cd frontend && npm install && npm run build
