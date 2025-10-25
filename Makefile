@@ -7,7 +7,7 @@ install:
 
 # Сборка фронтенда
 build:
-	cd frontend && npm install && npx vite build
+	cd frontend && npm install && npm run build
 
 # Запуск сервера с отдачей фронтенда
 start:
