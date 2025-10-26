@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Edmon86/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Edmon86/frontend-project-12/actions)",
-  "main": "index.jsx",
+  "main": "index.js",
   "scripts": {
     "build": "cd frontend && npm run build",
     "start": "npx start-server -s ./frontend/dist",
