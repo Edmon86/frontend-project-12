@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import avatar from '../assets/avatar.jpg';
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Введите имя пользователя'),
@@ -21,7 +22,7 @@ const LoginPage = () => (
           <div className="card shadow-sm">
             <div className="card-body row p-5">
               <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                <img src="/avatar.jpg" className="rounded-circle" alt="Войти" />
+                <img src={avatar} className="rounded-circle" alt="Войти" />
               </div>
 
               <div className="col-12 col-md-6 mt-3 mt-md-0">
