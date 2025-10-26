@@ -1,14 +1,12 @@
-# Makefile для проекта с frontend на Vite и сервером
-
-# Установка зависимостей
 install:
-	npm install
-	cd frontend && npm install
+	npm ci
+	cd frontend && npm ci
 
-# Сборка фронтенда
 build:
-	cd frontend && npm install && npm run build
+	cd frontend && npm ci && npm run build
 
-# Запуск сервера с отдачей фронтенда
 start:
 	npx start-server -s ./frontend/dist
+
+lint:
+	cd frontend && npx eslint .
