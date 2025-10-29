@@ -8,7 +8,7 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required('Введите пароль'),
 });
 
-const LoginPage = () => (
+const LoginPage = ({ setIsAuth }) => (
   <div className="d-flex flex-column h-100">
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
@@ -31,43 +31,31 @@ const LoginPage = () => (
                 <Formik
                   initialValues={{ username: '', password: '' }}
                   validationSchema={LoginSchema}
-                  onSubmit={(values) => {
-                    console.log('Отправлено:', values);
+                  onSubmit={(values, { setStatus }) => {
+                    const { username, password } = values;
+                    if (username === 'admin' && password === 'admin') {
+                      localStorage.setItem('userToken', 'fake-jwt-token');
+                      setIsAuth(true);
+                    } else {
+                      setStatus('Неверные имя пользователя или пароль');
+                    }
                   }}
                 >
-                  {() => (
+                  {({ status }) => (
                     <Form>
                       <div className="form-floating mb-3">
-                        <Field
-                          name="username"
-                          type="text"
-                          placeholder="Ваш ник"
-                          id="username"
-                          className="form-control"
-                        />
+                        <Field name="username" type="text" className="form-control" id="username" />
                         <label htmlFor="username">Ваш ник</label>
-                        <ErrorMessage
-                          name="username"
-                          component="div"
-                          className="text-danger small mt-1"
-                        />
+                        <ErrorMessage name="username" component="div" className="text-danger small mt-1" />
                       </div>
 
                       <div className="form-floating mb-4">
-                        <Field
-                          name="password"
-                          type="password"
-                          placeholder="Пароль"
-                          id="password"
-                          className="form-control"
-                        />
+                        <Field name="password" type="password" className="form-control" id="password" />
                         <label htmlFor="password">Пароль</label>
-                        <ErrorMessage
-                          name="password"
-                          component="div"
-                          className="text-danger small mt-1"
-                        />
+                        <ErrorMessage name="password" component="div" className="text-danger small mt-1" />
                       </div>
+
+                      {status && <div className="text-danger text-center mb-2">{status}</div>}
 
                       <button type="submit" className="w-100 mb-3 btn btn-outline-primary">
                         Войти
