@@ -31,12 +31,30 @@ const LoginPage = ({ setIsAuth }) => (
                 <Formik
                   initialValues={{ username: '', password: '' }}
                   validationSchema={LoginSchema}
-                  onSubmit={(values, { setStatus }) => {
+                  onSubmit={async (values, { setStatus }) => {
                     const { username, password } = values;
-                    if (username === 'admin' && password === 'admin') {
-                      localStorage.setItem('userToken', 'fake-jwt-token');
+                    try {
+                      // 🔹 Отправляем запрос к серверу Hexlet Chat
+                      const response = await fetch('/api/v1/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password }),
+                      });
+
+                      if (!response.ok) {
+                        throw new Error('Ошибка входа');
+                      }
+
+                      const data = await response.json();
+
+                      // ✅ Сохраняем реальный токен от сервера
+                      localStorage.setItem('userToken', data.token);
+                      localStorage.setItem('username', data.username);
+
+                      // ✅ Меняем состояние
                       setIsAuth(true);
-                    } else {
+                    } catch (err) {
+                      console.error(err);
                       setStatus('Неверные имя пользователя или пароль');
                     }
                   }}

@@ -11,7 +11,6 @@ const App = () => {
     const handleStorageChange = () => {
       setIsAuth(!!localStorage.getItem('userToken'));
     };
-
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);

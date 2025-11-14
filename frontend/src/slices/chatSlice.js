@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Асинхронные операции для загрузки каналов и сообщений
+// === Загрузка каналов ===
 export const fetchChannels = createAsyncThunk(
   'chat/fetchChannels',
   async (_, { rejectWithValue }) => {
@@ -10,13 +10,17 @@ export const fetchChannels = createAsyncThunk(
       const response = await axios.get('/api/v1/channels', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data;
+      return response.data.map(c => ({
+        ...c,
+        isRemovable: c.isRemovable ?? true,
+      }));
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue('Ошибка при загрузке каналов');
     }
   }
 );
 
+// === Загрузка сообщений ===
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
   async (channelId, { rejectWithValue }) => {
@@ -27,46 +31,108 @@ export const fetchMessages = createAsyncThunk(
       });
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue('Ошибка при загрузке сообщений');
     }
   }
 );
 
+// === Добавить канал ===
+export const addChannelServer = createAsyncThunk(
+  'chat/addChannelServer',
+  async (name, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('userToken');
+      const response = await axios.post(
+        '/api/v1/channels',
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return { ...response.data, isRemovable: true };
+    } catch (err) {
+      return rejectWithValue('Ошибка при добавлении канала');
+    }
+  }
+);
+
+// === Переименовать канал ===
+export const renameChannelServer = createAsyncThunk(
+  'chat/renameChannelServer',
+  async ({ id, name }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('userToken');
+      await axios.patch(
+        `/api/v1/channels/${id}`,
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return { id, name };
+    } catch (err) {
+      return rejectWithValue('Ошибка при переименовании канала');
+    }
+  }
+);
+
+// === Удалить канал ===
+export const removeChannelServer = createAsyncThunk(
+  'chat/removeChannelServer',
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('userToken');
+      await axios.delete(`/api/v1/channels/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return id;
+    } catch (err) {
+      return rejectWithValue('Ошибка при удалении канала');
+    }
+  }
+);
+
+// === Slice ===
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
     channels: [],
     messages: [],
     currentChannelId: null,
-    status: 'idle', // idle | loading | succeeded | failed
+    status: 'idle',
     error: null,
   },
   reducers: {
-    setCurrentChannelId(state, action) {
+    setCurrentChannelId: (state, action) => {
       state.currentChannelId = action.payload;
     },
-    addMessage(state, action) {
+    addMessage: (state, action) => {
       state.messages.push(action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchChannels.pending, (state) => {
-        state.status = 'loading';
-      })
       .addCase(fetchChannels.fulfilled, (state, action) => {
-        state.status = 'succeeded';
         state.channels = action.payload;
-        if (!state.currentChannelId && action.payload.length) {
-          state.currentChannelId = action.payload[0].id;
+        if (!state.currentChannelId && state.channels.length > 0) {
+          const general = state.channels.find(c => c.name === 'general');
+          state.currentChannelId = general ? general.id : state.channels[0].id;
         }
-      })
-      .addCase(fetchChannels.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.messages = action.payload;
+      })
+      .addCase(addChannelServer.fulfilled, (state, action) => {
+        state.channels.push(action.payload);
+        state.currentChannelId = action.payload.id;
+      })
+      .addCase(renameChannelServer.fulfilled, (state, action) => {
+        const { id, name } = action.payload;
+        const channel = state.channels.find(c => c.id === id);
+        if (channel) channel.name = name;
+      })
+      .addCase(removeChannelServer.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.channels = state.channels.filter(c => c.id !== id);
+        if (state.currentChannelId === id && state.channels.length > 0) {
+          state.currentChannelId = state.channels[0].id;
+        }
       });
   },
 });
