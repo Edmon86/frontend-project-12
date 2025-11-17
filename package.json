@@ -4,8 +4,8 @@
   "description": "[![Actions Status](https://github.com/Edmon86/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Edmon86/frontend-project-12/actions)",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && npm run build",
-    "start": "npx start-server -s ./frontend/dist",
+    "build": "cd frontend && npm ci && npm run build",
+    "start": "npx start-server -a 0.0.0.0 -p ${PORT:-5001} -s ./frontend/dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
