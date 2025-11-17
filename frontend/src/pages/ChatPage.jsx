@@ -4,8 +4,7 @@ import { io } from 'socket.io-client';
 import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice';
 import { useNavigate } from 'react-router-dom';
 import Channels from '../components/Channels.jsx';
-
-const socket = io();
+import socket from '../socket.js';
 
 const ChatPage = ({ setIsAuth }) => {
   const dispatch = useDispatch();
