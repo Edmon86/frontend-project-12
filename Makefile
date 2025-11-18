@@ -6,8 +6,7 @@ build:
 	cd frontend && npm ci && npm run build
 
 start:
-	npx start-server -a 0.0.0.0 -p $${PORT:-5001} -s ./frontend/dist
+	npx start-server -s ./frontend/dist
 
 lint:
 	cd frontend && npx eslint .
-
