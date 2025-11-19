@@ -35,7 +35,7 @@ const LoginPage = ({ setIsAuth }) => (
                     const { username, password } = values;
                     try {
                       // 🔹 Отправляем запрос к серверу Hexlet Chat
-                      const response = await fetch('/api/v1/login', {
+                      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username, password }),
