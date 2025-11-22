@@ -58,10 +58,12 @@ const ChatPage = ({ setIsAuth }) => {
     e.preventDefault();
     const text = e.target.elements.message.value.trim();
     if (!text) return;
+    
+    const username = localStorage.getItem('username') || 'me';
 
     const message = {
       channelId: currentChannelId,
-      username: 'me',
+      username,
       text,
     };
 

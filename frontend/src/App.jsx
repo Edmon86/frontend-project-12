@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ChatPage from './pages/ChatPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'));
@@ -24,6 +25,10 @@ const App = () => {
       <Route
         path="/login"
         element={!isAuth ? <LoginPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/signup"
+       element={!isAuth ? <SignupPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
       />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
