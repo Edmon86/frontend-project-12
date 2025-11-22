@@ -1,4 +1,4 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Edmon86/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Edmon86/frontend-project-12/actions)
-### 🚀 Депл
+### 🚀 Деплой
 Приложение доступно по ссылке: [https://frontend-project-12-j7qf.onrender.com](https://frontend-project-12-j7qf.onrender.com)
