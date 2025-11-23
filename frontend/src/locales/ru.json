@@ -1,0 +1,70 @@
+{
+  "appName": "Hexlet Chat",
+
+  "login": {
+    "title": "Войти",
+    "username": "Ваш ник",
+    "password": "Пароль",
+    "submit": "Войти",
+    "noAccount": "Нет аккаунта?",
+    "signup": "Регистрация",
+    "error": "Неверные имя пользователя или пароль",
+
+    "usernameRequired": "Введите имя пользователя",
+    "passwordRequired": "Введите пароль"
+  },
+
+  "signup": {
+    "title": "Регистрация",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "submit": "Создать аккаунт",
+
+    "haveAccount": "Уже есть аккаунт?",
+    "login": "Войти",
+
+    "usernameRequired": "Введите имя пользователя",
+    "passwordRequired": "Введите пароль",
+    "confirmPasswordRequired": "Введите подтверждение пароля",
+
+    "errors": {
+      "min3": "Минимум 3 символа",
+      "max20": "Максимум 20 символов",
+      "min6": "Минимум 6 символов",
+      "passwordsMatch": "Пароли должны совпадать",
+      "usernameExists": "Пользователь уже существует",
+      "general": "Ошибка регистрации"
+    }
+  },
+
+  "channels": {
+    "title": "Каналы",
+    "addTitle": "Добавить канал",
+    "renameTitle": "Переименовать канал",
+    "placeholder": "Имя канала",
+    "add": "Добавить",
+    "save": "Сохранить",
+    "rename": "Переименовать",
+    "delete": "Удалить",
+    "errors": {
+      "min3": "Минимум 3 символа",
+      "max20": "Максимум 20 символов",
+      "required": "Введите имя канала",
+      "unique": "Канал с таким именем уже существует"
+    }
+  },
+
+  "messages": {
+    "placeholder": "Введите сообщение...",
+    "connected": "Онлайн",
+    "disconnected": "Оффлайн",
+    "count_one": "{{count}} сообщение",
+    "count_few": "{{count}} сообщения",
+    "count_many": "{{count}} сообщений",
+    "count_other": "{{count}} сообщений"
+  },
+
+  "logout": "Выйти",
+  "notFound": "404 - Страница не найдена"
+}

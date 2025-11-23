@@ -5,8 +5,10 @@ import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice';
 import { useNavigate } from 'react-router-dom';
 import Channels from '../components/Channels.jsx';
 import socket from '../socket.js';
+import { useTranslation } from 'react-i18next';
 
 const ChatPage = ({ setIsAuth }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { channels, messages, currentChannelId } = useSelector((state) => state.chat);
@@ -18,12 +20,10 @@ const ChatPage = ({ setIsAuth }) => {
   const channelMessages = messages.filter((m) => m.channelId === currentChannelId);
   const messageCount = channelMessages.length;
 
-  // Загружаем каналы при старте
   useEffect(() => {
     dispatch(fetchChannels());
   }, [dispatch]);
 
-  // Загружаем сообщения при выборе канала
   useEffect(() => {
     if (!currentChannelId) return;
 
@@ -42,30 +42,23 @@ const ChatPage = ({ setIsAuth }) => {
     };
   }, [currentChannelId, dispatch]);
 
-  // Скролл вниз при появлении новых сообщений
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [channelMessages]);
 
-  // Статус соединения
   useEffect(() => {
     socket.on('connect', () => setStatus('connected'));
     socket.on('disconnect', () => setStatus('disconnected'));
   }, []);
 
-  // Отправка сообщения
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const text = e.target.elements.message.value.trim();
     if (!text) return;
-    
+
     const username = localStorage.getItem('username') || 'me';
 
-    const message = {
-      channelId: currentChannelId,
-      username,
-      text,
-    };
+    const message = { channelId: currentChannelId, username, text };
 
     try {
       await fetch('/api/v1/messages', {
@@ -77,7 +70,7 @@ const ChatPage = ({ setIsAuth }) => {
         body: JSON.stringify(message),
       });
     } catch (err) {
-      console.error('Ошибка отправки сообщения:', err);
+      console.error(t('chat.errors.sendMessage'), err);
     }
 
     e.target.reset();
@@ -91,53 +84,33 @@ const ChatPage = ({ setIsAuth }) => {
 
   return (
     <div className="d-flex flex-column h-100 bg-light">
-      {/* Навбар */}
       <nav className="navbar navbar-light bg-white shadow-sm p-3">
         <div className="container d-flex justify-content-between">
-          <h5 className="mb-0">Hexlet Chat</h5>
+          <h5 className="mb-0">{t('appName')}</h5>
           <div>
             <span className={`me-3 text-${status === 'connected' ? 'success' : 'danger'}`}>
-              {status === 'connected' ? 'Подключено' : 'Нет соединения'}
+              {status === 'connected' ? t('messages.connected') : t('messages.disconnected')}
             </span>
             <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
-              Выйти
+              {t('logout')}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Центрированный контент */}
       <div className="d-flex justify-content-center flex-grow-1 py-4">
-        <div
-          className="d-flex bg-white shadow rounded p-3"
-          style={{
-            width: '80%',
-            maxWidth: '1500px',
-            minHeight: '80vh',
-          }}
-        >
-          {/* Список каналов */}
+        <div className="d-flex bg-white shadow rounded p-3" style={{ width: '80%', maxWidth: '1500px', minHeight: '80vh' }}>
           <div className="border-end pe-3" style={{ width: '250px' }}>
             <Channels />
           </div>
 
-          {/* Сообщения */}
           <div className="flex-grow-1 ps-4 d-flex flex-column">
             {currentChannel && (
-              <div
-                className="mb-3 pb-2"
-                style={{
-                  borderBottom: '1px solid #dee2e6',
-                  fontWeight: 'bold',
-                  color: '#495057',
-                }}
-              >
-                #{currentChannel.name} • {messageCount}{' '}
-                {messageCount === 1 ? 'сообщение' : 'сообщений'}
+              <div className="mb-3 pb-2" style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}>
+                #{currentChannel.name} • {t('messages.count', { count: messageCount })}
               </div>
             )}
 
-            {/* Список сообщений */}
             <div className="flex-grow-1 overflow-auto mb-3" style={{ maxHeight: '60vh' }}>
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
@@ -148,12 +121,11 @@ const ChatPage = ({ setIsAuth }) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Форма ввода */}
             <form onSubmit={handleSendMessage}>
               <input
                 name="message"
                 className="form-control"
-                placeholder="Введите сообщение..."
+                placeholder={t('messages.placeholder')}
                 autoComplete="off"
               />
             </form>

@@ -9,29 +9,30 @@ import {
   renameChannelServer,
   removeChannelServer,
 } from '../slices/chatSlice';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
-const ChannelSchema = (channels) =>
-  Yup.object().shape({
+const createSchema = (channels, t) =>
+  Yup.object({
     name: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
-      .required('Введите имя канала')
+      .min(3, t('channels.errors.min3'))
+      .max(20, t('channels.errors.max20'))
+      .required(t('channels.errors.required'))
       .test(
         'unique',
-        'Канал с таким именем уже существует',
+        t('channels.errors.unique'),
         (value) => !channels.some((c) => c.name.toLowerCase() === value.toLowerCase())
       ),
   });
 
 const Channels = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { channels, currentChannelId } = useSelector((state) => state.chat);
 
   const [showAdd, setShowAdd] = useState(false);
   const [showRename, setShowRename] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
-
-  const handleSelectChannel = (id) => dispatch(setCurrentChannelId(id));
 
   const openAdd = () => setShowAdd(true);
   const closeAdd = () => setShowAdd(false);
@@ -40,66 +41,49 @@ const Channels = () => {
     setSelectedChannel(channel);
     setShowRename(true);
   };
+
   const closeRename = () => setShowRename(false);
 
   return (
     <div>
+      {/* HEADER + LANGUAGE SWITCHER */}
       <div className="d-flex justify-content-between align-items-center mb-2">
-        <h6>Каналы</h6>
-        <Button size="sm" onClick={openAdd}>+</Button>
+        <h6 className="m-0">{t('channels.title')}</h6>
+
+        <div className="d-flex gap-2">
+          <LanguageSwitcher />
+          <Button size="sm" onClick={openAdd}>+</Button>
+        </div>
       </div>
 
+      {/* CHANNEL LIST */}
       <ul className="list-group">
         {channels.map((c) => (
           <li
             key={c.id}
-            onClick={() => handleSelectChannel(c.id)}
+            onClick={() => dispatch(setCurrentChannelId(c.id))}
             className={`list-group-item d-flex justify-content-between align-items-center ${
               c.id === currentChannelId ? 'active' : ''
             }`}
-            style={{ position: 'relative', cursor: 'pointer' }}
-            onMouseEnter={(e) => {
-              const btn = e.currentTarget.querySelector('.channel-actions');
-              if (btn) btn.style.opacity = 1;
-            }}
-            onMouseLeave={(e) => {
-              const btn = e.currentTarget.querySelector('.channel-actions');
-              if (btn) btn.style.opacity = 0;
-            }}
+            style={{ cursor: 'pointer', position: 'relative' }}
           >
-            <span
-              style={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-              title={c.name}
-            >
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               # {c.name}
             </span>
 
-            {c.name !== 'general' && c.name !== 'random' && (
+            {c.removable && (
               <Dropdown
-                className="channel-actions"
-                onClick={(e) => e.stopPropagation()} // предотвращаем переключение канала при клике на меню
-                style={{
-                  opacity: 0,
-                  transition: 'opacity 0.2s',
-                  position: 'absolute',
-                  right: '0.5rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                }}
+                className="position-absolute"
+                style={{ right: '10px' }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <Dropdown.Toggle
-                  variant="variant"
-                  size="sm"
-                  style={{ padding: '0.2rem 0.5rem' }}
-                />
+                <Dropdown.Toggle size="sm" variant="variant" />
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => openRename(c)}>Переименовать</Dropdown.Item>
+                  <Dropdown.Item onClick={() => openRename(c)}>
+                    {t('channels.rename')}
+                  </Dropdown.Item>
                   <Dropdown.Item onClick={() => dispatch(removeChannelServer(c.id))}>
-                    Удалить
+                    {t('channels.delete')}
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -108,16 +92,17 @@ const Channels = () => {
         ))}
       </ul>
 
-      {/* Добавить канал */}
+      {/* ADD CHANNEL MODAL */}
       <Modal show={showAdd} onHide={closeAdd} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Добавить канал</Modal.Title>
+          <Modal.Title>{t('channels.addTitle')}</Modal.Title>
         </Modal.Header>
+
         <Formik
           initialValues={{ name: '' }}
-          validationSchema={ChannelSchema(channels)}
-          onSubmit={async (values, { setSubmitting }) => {
-            await dispatch(addChannelServer(values.name));
+          validationSchema={createSchema(channels, t)}
+          onSubmit={async ({ name }, { setSubmitting }) => {
+            await dispatch(addChannelServer(name));
             setSubmitting(false);
             closeAdd();
           }}
@@ -126,31 +111,32 @@ const Channels = () => {
             <Form className="p-3">
               <Field
                 name="name"
-                className="form-control mb-2"
-                placeholder="Имя канала"
+                className="form-control"
+                placeholder={t('channels.placeholder')}
                 autoFocus
               />
-              <ErrorMessage name="name" component="div" className="text-danger mb-2" />
-              <div className="text-end">
-                <Button type="submit" disabled={isSubmitting}>
-                  Добавить
-                </Button>
+              <ErrorMessage name="name" component="div" className="text-danger mt-2" />
+
+              <div className="text-end mt-3">
+                <Button type="submit" disabled={isSubmitting}>{t('channels.add')}</Button>
               </div>
             </Form>
           )}
         </Formik>
       </Modal>
 
-      {/* Переименовать канал */}
+      {/* RENAME CHANNEL MODAL */}
       <Modal show={showRename} onHide={closeRename} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Переименовать канал</Modal.Title>
+          <Modal.Title>{t('channels.renameTitle')}</Modal.Title>
         </Modal.Header>
+
         {selectedChannel && (
           <Formik
             initialValues={{ name: selectedChannel.name }}
-            validationSchema={ChannelSchema(
-              channels.filter((c) => c.id !== selectedChannel.id)
+            validationSchema={createSchema(
+              channels.filter((c) => c.id !== selectedChannel.id),
+              t
             )}
             onSubmit={async ({ name }, { setSubmitting }) => {
               await dispatch(renameChannelServer({ id: selectedChannel.id, name }));
@@ -160,10 +146,11 @@ const Channels = () => {
           >
             {({ isSubmitting }) => (
               <Form className="p-3">
-                <Field name="name" className="form-control mb-2" autoFocus />
-                <ErrorMessage name="name" component="div" className="text-danger mb-2" />
-                <div className="text-end">
-                  <Button type="submit" disabled={isSubmitting}>Сохранить</Button>
+                <Field name="name" className="form-control" autoFocus />
+                <ErrorMessage name="name" component="div" className="text-danger mt-2" />
+
+                <div className="text-end mt-3">
+                  <Button type="submit" disabled={isSubmitting}>{t('channels.save')}</Button>
                 </div>
               </Form>
             )}
@@ -175,4 +162,3 @@ const Channels = () => {
 };
 
 export default Channels;
-

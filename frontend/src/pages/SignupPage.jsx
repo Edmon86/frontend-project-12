@@ -2,26 +2,29 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import avatar from '../assets/avatar.jpg';
-
-const SignupSchema = Yup.object().shape({
-  username: Yup.string()
-    .required('Введите имя пользователя')
-    .min(3, 'Минимум 3 символа')
-    .max(20, 'Максимум 20 символов'),
-  password: Yup.string()
-    .required('Введите пароль')
-    .min(6, 'Минимум 6 символов'),
-  confirmPassword: Yup.string()
-    .required('Подтвердите пароль')
-    .oneOf([Yup.ref('password')], 'Пароли должны совпадать'),
-});
+import { useTranslation } from 'react-i18next';
 
 const SignupPage = ({ setIsAuth }) => {
+  const { t } = useTranslation();
+
+  const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+      .required(t('signup.usernameRequired'))
+      .min(3, t('signup.errors.min3'))
+      .max(20, t('signup.errors.max20')),
+    password: Yup.string()
+      .required(t('signup.passwordRequired'))
+      .min(6, t('signup.errors.min6')),
+    confirmPassword: Yup.string()
+      .required(t('signup.confirmPasswordRequired'))
+      .oneOf([Yup.ref('password')], t('signup.errors.passwordsMatch')),
+  });
+
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">Hexlet Chat</a>
+          <a className="navbar-brand" href="/">{t('appName')}</a>
         </div>
       </nav>
 
@@ -31,11 +34,11 @@ const SignupPage = ({ setIsAuth }) => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">
                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                  <img src={avatar} className="rounded-circle" alt="signup" />
+                  <img src={avatar} className="rounded-circle" alt={t('signup.title')} />
                 </div>
 
                 <div className="col-12 col-md-6 mt-3 mt-md-0">
-                  <h1 className="text-center mb-4">Регистрация</h1>
+                  <h1 className="text-center mb-4">{t('signup.title')}</h1>
 
                   <Formik
                     initialValues={{ username: '', password: '', confirmPassword: '' }}
@@ -52,7 +55,7 @@ const SignupPage = ({ setIsAuth }) => {
                         });
 
                         if (res.status === 409) {
-                          setStatus('Пользователь с таким именем уже существует');
+                          setStatus(t('signup.errors.usernameExists'));
                           return;
                         }
 
@@ -66,7 +69,7 @@ const SignupPage = ({ setIsAuth }) => {
 
                         setIsAuth(true);
                       } catch (err) {
-                        setStatus('Ошибка регистрации. Попробуйте ещё раз.');
+                        setStatus(t('signup.errors.general'));
                       }
                     }}
                   >
@@ -74,36 +77,35 @@ const SignupPage = ({ setIsAuth }) => {
                       <Form>
                         <div className="form-floating mb-3">
                           <Field name="username" type="text" className="form-control" id="username" />
-                          <label htmlFor="username">Имя пользователя</label>
+                          <label htmlFor="username">{t('signup.username')}</label>
                           <ErrorMessage name="username" component="div" className="text-danger small mt-1" />
                         </div>
 
                         <div className="form-floating mb-3">
                           <Field name="password" type="password" className="form-control" id="password" />
-                          <label htmlFor="password">Пароль</label>
+                          <label htmlFor="password">{t('signup.password')}</label>
                           <ErrorMessage name="password" component="div" className="text-danger small mt-1" />
                         </div>
 
                         <div className="form-floating mb-4">
                           <Field name="confirmPassword" type="password" className="form-control" id="confirmPassword" />
-                          <label htmlFor="confirmPassword">Подтверждение пароля</label>
+                          <label htmlFor="confirmPassword">{t('signup.confirmPassword')}</label>
                           <ErrorMessage name="confirmPassword" component="div" className="text-danger small mt-1" />
                         </div>
 
                         {status && <div className="text-danger text-center mb-2">{status}</div>}
 
                         <button type="submit" className="w-100 mb-3 btn btn-outline-primary">
-                          Зарегистрироваться
+                          {t('signup.submit')}
                         </button>
                       </Form>
                     )}
                   </Formik>
-
                 </div>
               </div>
 
               <div className="card-footer p-4 text-center">
-                <span>Уже есть аккаунт?</span> <a href="/login">Войти</a>
+                <span>{t('signup.haveAccount')}</span> <a href="/login">{t('signup.login')}</a>
               </div>
             </div>
           </div>

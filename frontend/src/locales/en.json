@@ -1,0 +1,43 @@
+{
+  "appName": "Hexlet Chat",
+  "login": "Login",
+  "signup": "Signup",
+  "noAccount": "No account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "logout": "Logout",
+  "username": "Your nickname",
+  "password": "Password",
+  "confirmPassword": "Confirm password",
+  "messages": {
+    "connected": "Connected",
+    "disconnected": "No connection",
+    "message": "message",
+    "messages": "messages",
+    "placeholder": "Type a message..."
+  },
+  "channels": {
+    "title": "Channels",
+    "addTitle": "Add channel",
+    "renameTitle": "Rename channel",
+    "placeholder": "Channel name",
+    "add": "Add",
+    "save": "Save",
+    "rename": "Rename",
+    "delete": "Delete",
+    "errors": {
+      "min3": "Minimum 3 characters",
+      "max20": "Maximum 20 characters",
+      "required": "Enter channel name",
+      "unique": "Channel with this name already exists"
+    }
+  },
+  "forms": {
+    "loginError": "Incorrect username or password",
+    "signupErrorExists": "User with this name already exists",
+    "signupError": "Registration failed. Please try again."
+  },
+  "chat": {
+    "messagesCount": "{count} {count, plural, one {message} few {messages} many {messages} other {messages}}"
+  },
+  "notFound": "404 - Page not found"
+}
