@@ -4,6 +4,8 @@ import ChatPage from './pages/ChatPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'));
@@ -17,24 +19,27 @@ const App = () => {
   }, []);
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={isAuth ? <ChatPage setIsAuth={setIsAuth} /> : <Navigate to="/login" replace />}
-      />
-      <Route
-        path="/login"
-        element={!isAuth ? <LoginPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
-      />
-      <Route
-        path="/signup"
-       element={!isAuth ? <SignupPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
-      />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={isAuth ? <ChatPage setIsAuth={setIsAuth} /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/login"
+          element={!isAuth ? <LoginPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/signup"
+          element={!isAuth ? <SignupPage setIsAuth={setIsAuth} /> : <Navigate to="/" replace />}
+        />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+
+      {/* Контейнер для всплывающих уведомлений */}
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 };
 
 export default App;
-
-

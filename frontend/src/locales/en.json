@@ -1,20 +1,39 @@
 {
   "appName": "Hexlet Chat",
-  "login": "Login",
-  "signup": "Signup",
-  "noAccount": "No account?",
-  "alreadyHaveAccount": "Already have an account?",
-  "logout": "Logout",
-  "username": "Your nickname",
-  "password": "Password",
-  "confirmPassword": "Confirm password",
-  "messages": {
-    "connected": "Connected",
-    "disconnected": "No connection",
-    "message": "message",
-    "messages": "messages",
-    "placeholder": "Type a message..."
+
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Login",
+    "noAccount": "No account?",
+    "signup": "Sign up",
+    "error": "Incorrect username or password",
+    "usernameRequired": "Enter username",
+    "passwordRequired": "Enter password"
   },
+
+  "signup": {
+    "title": "Sign up",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
+    "login": "Login",
+    "usernameRequired": "Enter username",
+    "passwordRequired": "Enter password",
+    "confirmPasswordRequired": "Enter confirmation password",
+    "errors": {
+      "min3": "At least 3 characters",
+      "max20": "Maximum 20 characters",
+      "min6": "At least 6 characters",
+      "passwordsMatch": "Passwords must match",
+      "usernameExists": "User already exists",
+      "general": "Registration error"
+    }
+  },
+
   "channels": {
     "title": "Channels",
     "addTitle": "Add channel",
@@ -25,19 +44,39 @@
     "rename": "Rename",
     "delete": "Delete",
     "errors": {
-      "min3": "Minimum 3 characters",
+      "min3": "At least 3 characters",
       "max20": "Maximum 20 characters",
       "required": "Enter channel name",
       "unique": "Channel with this name already exists"
+    },
+    "addSuccess": "Channel created successfully",
+    "addError": "Error creating channel",
+    "renameSuccess": "Channel renamed",
+    "renameError": "Error renaming channel",
+    "deleteSuccess": "Channel deleted",
+    "deleteError": "Error deleting channel"
+  },
+
+  "messages": {
+    "placeholder": "Type a message...",
+    "connected": "Online",
+    "disconnected": "Offline",
+    "count_one": "{{count}} message",
+    "count_few": "{{count}} messages",
+    "count_many": "{{count}} messages",
+    "count_other": "{{count}} messages",
+    "send": "send"
+  },
+
+  "chat": {
+    "errors": {
+      "noNetwork": "No network connection",
+      "loadChannels": "Error loading channels",
+      "loadMessages": "Error loading messages",
+      "sendMessage": "Failed to send message"
     }
   },
-  "forms": {
-    "loginError": "Incorrect username or password",
-    "signupErrorExists": "User with this name already exists",
-    "signupError": "Registration failed. Please try again."
-  },
-  "chat": {
-    "messagesCount": "{count} {count, plural, one {message} few {messages} many {messages} other {messages}}"
-  },
+
+  "logout": "Logout",
   "notFound": "404 - Page not found"
 }

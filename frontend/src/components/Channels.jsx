@@ -10,6 +10,8 @@ import {
   removeChannelServer,
 } from '../slices/chatSlice';
 import { useTranslation } from 'react-i18next';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const createSchema = (channels, t) =>
@@ -41,15 +43,63 @@ const Channels = () => {
     setSelectedChannel(channel);
     setShowRename(true);
   };
-
   const closeRename = () => setShowRename(false);
+
+  // --- Функция добавления канала с уведомлениями ---
+  const handleAddChannel = async (name, setSubmitting) => {
+    try {
+      await dispatch(addChannelServer(name)).unwrap();
+      toast.success(t('channels.addSuccess'));
+      closeAdd();
+    } catch (err) {
+      if (!navigator.onLine) {
+        toast.error(t('chat.errors.noNetwork'));
+      } else {
+        toast.error(t('channels.addError'));
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Функция переименования канала с уведомлениями ---
+  const handleRenameChannel = async (id, name, setSubmitting) => {
+    try {
+      await dispatch(renameChannelServer({ id, name })).unwrap();
+      toast.success(t('channels.renameSuccess'));
+      closeRename();
+    } catch (err) {
+      if (!navigator.onLine) {
+        toast.error(t('chat.errors.noNetwork'));
+      } else {
+        toast.error(t('channels.renameError'));
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Функция удаления канала с уведомлениями ---
+  const handleDeleteChannel = async (id) => {
+    try {
+      await dispatch(removeChannelServer(id)).unwrap();
+      toast.success(t('channels.deleteSuccess'));
+    } catch (err) {
+      if (!navigator.onLine) {
+        toast.error(t('chat.errors.noNetwork'));
+      } else {
+        toast.error(t('channels.deleteError'));
+      }
+    }
+  };
 
   return (
     <div>
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {/* HEADER + LANGUAGE SWITCHER */}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h6 className="m-0">{t('channels.title')}</h6>
-
         <div className="d-flex gap-2">
           <LanguageSwitcher />
           <Button size="sm" onClick={openAdd}>+</Button>
@@ -82,7 +132,7 @@ const Channels = () => {
                   <Dropdown.Item onClick={() => openRename(c)}>
                     {t('channels.rename')}
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => dispatch(removeChannelServer(c.id))}>
+                  <Dropdown.Item onClick={() => handleDeleteChannel(c.id)}>
                     {t('channels.delete')}
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -97,14 +147,11 @@ const Channels = () => {
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.addTitle')}</Modal.Title>
         </Modal.Header>
-
         <Formik
           initialValues={{ name: '' }}
           validationSchema={createSchema(channels, t)}
           onSubmit={async ({ name }, { setSubmitting }) => {
-            await dispatch(addChannelServer(name));
-            setSubmitting(false);
-            closeAdd();
+            await handleAddChannel(name, setSubmitting);
           }}
         >
           {({ isSubmitting }) => (
@@ -116,7 +163,6 @@ const Channels = () => {
                 autoFocus
               />
               <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-
               <div className="text-end mt-3">
                 <Button type="submit" disabled={isSubmitting}>{t('channels.add')}</Button>
               </div>
@@ -130,7 +176,6 @@ const Channels = () => {
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.renameTitle')}</Modal.Title>
         </Modal.Header>
-
         {selectedChannel && (
           <Formik
             initialValues={{ name: selectedChannel.name }}
@@ -139,16 +184,13 @@ const Channels = () => {
               t
             )}
             onSubmit={async ({ name }, { setSubmitting }) => {
-              await dispatch(renameChannelServer({ id: selectedChannel.id, name }));
-              setSubmitting(false);
-              closeRename();
+              await handleRenameChannel(selectedChannel.id, name, setSubmitting);
             }}
           >
             {({ isSubmitting }) => (
               <Form className="p-3">
                 <Field name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-
                 <div className="text-end mt-3">
                   <Button type="submit" disabled={isSubmitting}>{t('channels.save')}</Button>
                 </div>
