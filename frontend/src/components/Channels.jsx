@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Dropdown, Modal } from 'react-bootstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button, Dropdown, Modal } from 'react-bootstrap'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
 import {
   setCurrentChannelId,
   addChannelServer,
   renameChannelServer,
   removeChannelServer,
-} from '../slices/chatSlice';
-import { useTranslation } from 'react-i18next';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import LanguageSwitcher from './LanguageSwitcher';
+} from '../slices/chatSlice'
+import { useTranslation } from 'react-i18next'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import LanguageSwitcher from './LanguageSwitcher'
 
 const createSchema = (channels, t) =>
   Yup.object({
@@ -23,79 +23,78 @@ const createSchema = (channels, t) =>
       .test(
         'unique',
         t('channels.errors.unique'),
-        (value) => !channels.some((c) => c.name.toLowerCase() === value.toLowerCase())
+        (value) => !channels.some((c) => c.name.toLowerCase() === value.toLowerCase()),
       ),
-  });
+  })
 
 const Channels = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { channels, currentChannelId } = useSelector((state) => state.chat);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { channels, currentChannelId } = useSelector((state) => state.chat)
 
-  const [showAdd, setShowAdd] = useState(false);
-  const [showRename, setShowRename] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [showAdd, setShowAdd] = useState(false)
+  const [showRename, setShowRename] = useState(false)
+  const [selectedChannel, setSelectedChannel] = useState(null)
 
-  const openAdd = () => setShowAdd(true);
-  const closeAdd = () => setShowAdd(false);
+  const openAdd = () => setShowAdd(true)
+  const closeAdd = () => setShowAdd(false)
 
   const openRename = (channel) => {
-    setSelectedChannel(channel);
-    setShowRename(true);
-  };
-  const closeRename = () => setShowRename(false);
+    setSelectedChannel(channel)
+    setShowRename(true)
+  }
+  const closeRename = () => setShowRename(false)
 
   // --- Функция добавления канала с уведомлениями ---
-  const handleAddChannel = async (name, setSubmitting) => {
+  const handleAddChannel = async(name, setSubmitting) => {
     try {
-      await dispatch(addChannelServer(name)).unwrap();
-      toast.success(t('channels.addSuccess'));
-      closeAdd();
-    } catch (err) {
+      await dispatch(addChannelServer(name)).unwrap()
+      toast.success(t('channels.addSuccess'))
+      closeAdd()
+    } catch {
       if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'));
+        toast.error(t('chat.errors.noNetwork'))
       } else {
-        toast.error(t('channels.addError'));
+        toast.error(t('channels.addError'))
       }
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   // --- Функция переименования канала с уведомлениями ---
-  const handleRenameChannel = async (id, name, setSubmitting) => {
+  const handleRenameChannel = async(id, name, setSubmitting) => {
     try {
-      await dispatch(renameChannelServer({ id, name })).unwrap();
-      toast.success(t('channels.renameSuccess'));
-      closeRename();
-    } catch (err) {
+      await dispatch(renameChannelServer({ id, name })).unwrap()
+      toast.success(t('channels.renameSuccess'))
+      closeRename()
+    } catch {
       if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'));
+        toast.error(t('chat.errors.noNetwork'))
       } else {
-        toast.error(t('channels.renameError'));
+        toast.error(t('channels.renameError'))
       }
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   // --- Функция удаления канала с уведомлениями ---
-  const handleDeleteChannel = async (id) => {
+  const handleDeleteChannel = async(id) => {
     try {
-      await dispatch(removeChannelServer(id)).unwrap();
-      toast.success(t('channels.deleteSuccess'));
-    } catch (err) {
+      await dispatch(removeChannelServer(id)).unwrap()
+      toast.success(t('channels.deleteSuccess'))
+    } catch {
       if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'));
+        toast.error(t('chat.errors.noNetwork'))
       } else {
-        toast.error(t('channels.deleteError'));
+        toast.error(t('channels.deleteError'))
       }
     }
-  };
+  }
 
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={3000} />
 
       {/* HEADER + LANGUAGE SWITCHER */}
       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -150,8 +149,8 @@ const Channels = () => {
         <Formik
           initialValues={{ name: '' }}
           validationSchema={createSchema(channels, t)}
-          onSubmit={async ({ name }, { setSubmitting }) => {
-            await handleAddChannel(name, setSubmitting);
+          onSubmit={async({ name }, { setSubmitting }) => {
+            await handleAddChannel(name, setSubmitting)
           }}
         >
           {({ isSubmitting }) => (
@@ -181,10 +180,10 @@ const Channels = () => {
             initialValues={{ name: selectedChannel.name }}
             validationSchema={createSchema(
               channels.filter((c) => c.id !== selectedChannel.id),
-              t
+              t,
             )}
-            onSubmit={async ({ name }, { setSubmitting }) => {
-              await handleRenameChannel(selectedChannel.id, name, setSubmitting);
+            onSubmit={async({ name }, { setSubmitting }) => {
+              await handleRenameChannel(selectedChannel.id, name, setSubmitting)
             }}
           >
             {({ isSubmitting }) => (
@@ -200,7 +199,7 @@ const Channels = () => {
         )}
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default Channels;
+export default Channels

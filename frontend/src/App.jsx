@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import ChatPage from './pages/ChatPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import NotFoundPage from './pages/NotFoundPage.jsx';
-import SignupPage from './pages/SignupPage.jsx';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import ChatPage from './pages/ChatPage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
+import SignupPage from './pages/SignupPage.jsx'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
-  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'));
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'))
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsAuth(!!localStorage.getItem('userToken'));
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+      setIsAuth(!!localStorage.getItem('userToken'))
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   return (
     <>
@@ -39,7 +39,7 @@ const App = () => {
       {/* Контейнер для всплывающих уведомлений */}
       <ToastContainer position="top-right" autoClose={3000} />
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

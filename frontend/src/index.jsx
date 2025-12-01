@@ -1,12 +1,12 @@
-import './i18n';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
-import App from './App.jsx';
-import { store } from './store';
+import './i18n'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './index.css'
+import App from './App.jsx'
+import { store } from './store'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -16,4 +16,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,
-);
+)

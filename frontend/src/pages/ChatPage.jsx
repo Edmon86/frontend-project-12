@@ -1,25 +1,25 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice';
-import { useNavigate } from 'react-router-dom';
-import Channels from '../components/Channels.jsx';
-import socket from '../socket.js';
-import { useTranslation } from 'react-i18next';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice'
+import { useNavigate } from 'react-router-dom'
+import Channels from '../components/Channels.jsx'
+import socket from '../socket.js'
+import { useTranslation } from 'react-i18next'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ChatPage = ({ setIsAuth }) => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { channels, messages, currentChannelId } = useSelector((state) => state.chat);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { channels, messages, currentChannelId } = useSelector((state) => state.chat)
 
-  const [status, setStatus] = useState('connected');
-  const messagesEndRef = useRef(null);
+  const [status, setStatus] = useState('connected')
+  const messagesEndRef = useRef(null)
 
-  const currentChannel = channels.find((ch) => ch.id === currentChannelId);
-  const channelMessages = messages.filter((m) => m.channelId === currentChannelId);
-  const messageCount = channelMessages.length;
+  const currentChannel = channels.find((ch) => ch.id === currentChannelId)
+  const channelMessages = messages.filter((m) => m.channelId === currentChannelId)
+  const messageCount = channelMessages.length
 
   // Загрузка каналов
   useEffect(() => {
@@ -27,58 +27,58 @@ const ChatPage = ({ setIsAuth }) => {
       .unwrap()
       .catch(() => {
         if (!navigator.onLine) {
-          toast.error(t('chat.errors.noNetwork'));
+          toast.error(t('chat.errors.noNetwork'))
         } else {
-          toast.error(t('chat.errors.loadChannels'));
+          toast.error(t('chat.errors.loadChannels'))
         }
-      });
-  }, [dispatch, t]);
+      })
+  }, [dispatch, t])
 
   // Загрузка сообщений для текущего канала
   useEffect(() => {
-    if (!currentChannelId) return;
+    if (!currentChannelId) return
 
     dispatch(fetchMessages(currentChannelId))
       .unwrap()
       .catch(() => {
         if (!navigator.onLine) {
-          toast.error(t('chat.errors.noNetwork'));
+          toast.error(t('chat.errors.noNetwork'))
         } else {
-          toast.error(t('chat.errors.loadMessages'));
+          toast.error(t('chat.errors.loadMessages'))
         }
-      });
+      })
 
     const handleNewMessage = (message) => {
       if (message.channelId === currentChannelId) {
-        dispatch(addMessage(message));
+        dispatch(addMessage(message))
       }
-    };
+    }
 
-    socket.on('newMessage', handleNewMessage);
+    socket.on('newMessage', handleNewMessage)
 
     return () => {
-      socket.off('newMessage', handleNewMessage);
-    };
-  }, [currentChannelId, dispatch, t]);
+      socket.off('newMessage', handleNewMessage)
+    }
+  }, [currentChannelId, dispatch, t])
 
   // Скролл вниз при новых сообщениях
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [channelMessages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [channelMessages])
 
   // Отслеживание статуса подключения
   useEffect(() => {
-    socket.on('connect', () => setStatus('connected'));
-    socket.on('disconnect', () => setStatus('disconnected'));
-  }, []);
+    socket.on('connect', () => setStatus('connected'))
+    socket.on('disconnect', () => setStatus('disconnected'))
+  }, [])
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    const text = e.target.elements.message.value.trim();
-    if (!text) return;
+  const handleSendMessage = async(e) => {
+    e.preventDefault()
+    const text = e.target.elements.message.value.trim()
+    if (!text) return
 
-    const username = localStorage.getItem('username') || 'me';
-    const message = { channelId: currentChannelId, username, text };
+    const username = localStorage.getItem('username') || 'me'
+    const message = { channelId: currentChannelId, username, text }
 
     try {
       const res = await fetch('/api/v1/messages', {
@@ -88,30 +88,30 @@ const ChatPage = ({ setIsAuth }) => {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(message),
-      });
+      })
 
-      if (!res.ok) throw new Error('server');
+      if (!res.ok) throw new Error('server')
 
-    } catch (err) {
+    } catch {
       if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'));
+        toast.error(t('chat.errors.noNetwork'))
       } else {
-        toast.error(t('chat.errors.sendMessage'));
+        toast.error(t('chat.errors.sendMessage'))
       }
     }
 
-    e.target.reset();
-  };
+    e.target.reset()
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
-    setIsAuth(false);
-    navigate('/login');
-  };
+    localStorage.removeItem('userToken')
+    setIsAuth(false)
+    navigate('/login')
+  }
 
   return (
     <div className="d-flex flex-column h-100 bg-light">
-      
+
       {/* Navbar */}
       <nav className="navbar navbar-light bg-white shadow-sm p-3">
         <div className="container d-flex justify-content-between">
@@ -170,7 +170,7 @@ const ChatPage = ({ setIsAuth }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatPage;
+export default ChatPage
