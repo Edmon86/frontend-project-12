@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import Channels from '../components/Channels.jsx'
 import socket from '../socket.js'
 import { useTranslation } from 'react-i18next'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import leoProfanity from 'leo-profanity'
 
 const ChatPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
@@ -21,31 +22,23 @@ const ChatPage = ({ setIsAuth }) => {
   const channelMessages = messages.filter((m) => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
 
-  // Загрузка каналов
   useEffect(() => {
     dispatch(fetchChannels())
       .unwrap()
       .catch(() => {
-        if (!navigator.onLine) {
-          toast.error(t('chat.errors.noNetwork'))
-        } else {
-          toast.error(t('chat.errors.loadChannels'))
-        }
+        if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+        else toast.error(t('chat.errors.loadChannels'))
       })
   }, [dispatch, t])
 
-  // Загрузка сообщений для текущего канала
   useEffect(() => {
     if (!currentChannelId) return
 
     dispatch(fetchMessages(currentChannelId))
       .unwrap()
       .catch(() => {
-        if (!navigator.onLine) {
-          toast.error(t('chat.errors.noNetwork'))
-        } else {
-          toast.error(t('chat.errors.loadMessages'))
-        }
+        if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+        else toast.error(t('chat.errors.loadMessages'))
       })
 
     const handleNewMessage = (message) => {
@@ -55,18 +48,13 @@ const ChatPage = ({ setIsAuth }) => {
     }
 
     socket.on('newMessage', handleNewMessage)
-
-    return () => {
-      socket.off('newMessage', handleNewMessage)
-    }
+    return () => socket.off('newMessage', handleNewMessage)
   }, [currentChannelId, dispatch, t])
 
-  // Скролл вниз при новых сообщениях
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [channelMessages])
 
-  // Отслеживание статуса подключения
   useEffect(() => {
     socket.on('connect', () => setStatus('connected'))
     socket.on('disconnect', () => setStatus('disconnected'))
@@ -78,7 +66,9 @@ const ChatPage = ({ setIsAuth }) => {
     if (!text) return
 
     const username = localStorage.getItem('username') || 'me'
-    const message = { channelId: currentChannelId, username, text }
+    leoProfanity.add(leoProfanity.getDictionary('ru'))
+    const cleanText = leoProfanity.clean(text)
+    const message = { channelId: currentChannelId, username, text: cleanText }
 
     try {
       const res = await fetch('/api/v1/messages', {
@@ -89,15 +79,10 @@ const ChatPage = ({ setIsAuth }) => {
         },
         body: JSON.stringify(message),
       })
-
       if (!res.ok) throw new Error('server')
-
     } catch {
-      if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'))
-      } else {
-        toast.error(t('chat.errors.sendMessage'))
-      }
+      if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+      else toast.error(t('chat.errors.sendMessage'))
     }
 
     e.target.reset()
@@ -111,8 +96,6 @@ const ChatPage = ({ setIsAuth }) => {
 
   return (
     <div className="d-flex flex-column h-100 bg-light">
-
-      {/* Navbar */}
       <nav className="navbar navbar-light bg-white shadow-sm p-3">
         <div className="container d-flex justify-content-between">
           <h5 className="mb-0">{t('appName')}</h5>
@@ -127,16 +110,12 @@ const ChatPage = ({ setIsAuth }) => {
         </div>
       </nav>
 
-      {/* Main Chat */}
       <div className="d-flex justify-content-center flex-grow-1 py-4">
         <div className="d-flex flex-column flex-md-row bg-white shadow rounded p-3" style={{ width: '90%', maxWidth: '1500px', minHeight: '80vh' }}>
-
-          {/* Channels */}
           <div className="border-end pe-3 mb-3 mb-md-0" style={{ width: '250px' }}>
             <Channels />
           </div>
 
-          {/* Messages */}
           <div className="flex-grow-1 ps-0 ps-md-4 d-flex flex-column">
             {currentChannel && (
               <div className="mb-3 pb-2" style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}>
@@ -154,7 +133,6 @@ const ChatPage = ({ setIsAuth }) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Message input */}
             <form onSubmit={handleSendMessage} className="d-flex">
               <input
                 name="message"

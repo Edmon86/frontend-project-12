@@ -10,9 +10,10 @@ import {
   removeChannelServer,
 } from '../slices/chatSlice'
 import { useTranslation } from 'react-i18next'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import LanguageSwitcher from './LanguageSwitcher'
+import leoProfanity from 'leo-profanity'
 
 const createSchema = (channels, t) =>
   Yup.object({
@@ -45,58 +46,46 @@ const Channels = () => {
   }
   const closeRename = () => setShowRename(false)
 
-  // --- Функция добавления канала с уведомлениями ---
   const handleAddChannel = async(name, setSubmitting) => {
+    const cleanName = leoProfanity.clean(name)
     try {
-      await dispatch(addChannelServer(name)).unwrap()
+      await dispatch(addChannelServer(cleanName)).unwrap()
       toast.success(t('channels.addSuccess'))
       closeAdd()
     } catch {
-      if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'))
-      } else {
-        toast.error(t('channels.addError'))
-      }
+      if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+      else toast.error(t('channels.addError'))
     } finally {
       setSubmitting(false)
     }
   }
 
-  // --- Функция переименования канала с уведомлениями ---
   const handleRenameChannel = async(id, name, setSubmitting) => {
+    const cleanName = leoProfanity.clean(name)
     try {
-      await dispatch(renameChannelServer({ id, name })).unwrap()
+      await dispatch(renameChannelServer({ id, name: cleanName })).unwrap()
       toast.success(t('channels.renameSuccess'))
       closeRename()
     } catch {
-      if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'))
-      } else {
-        toast.error(t('channels.renameError'))
-      }
+      if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+      else toast.error(t('channels.renameError'))
     } finally {
       setSubmitting(false)
     }
   }
 
-  // --- Функция удаления канала с уведомлениями ---
   const handleDeleteChannel = async(id) => {
     try {
       await dispatch(removeChannelServer(id)).unwrap()
       toast.success(t('channels.deleteSuccess'))
     } catch {
-      if (!navigator.onLine) {
-        toast.error(t('chat.errors.noNetwork'))
-      } else {
-        toast.error(t('channels.deleteError'))
-      }
+      if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
+      else toast.error(t('channels.deleteError'))
     }
   }
 
   return (
     <div>
-
-      {/* HEADER + LANGUAGE SWITCHER */}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h6 className="m-0">{t('channels.title')}</h6>
         <div className="d-flex gap-2">
@@ -105,7 +94,6 @@ const Channels = () => {
         </div>
       </div>
 
-      {/* CHANNEL LIST */}
       <ul className="list-group">
         {channels.map((c) => (
           <li
@@ -141,7 +129,6 @@ const Channels = () => {
         ))}
       </ul>
 
-      {/* ADD CHANNEL MODAL */}
       <Modal show={showAdd} onHide={closeAdd} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.addTitle')}</Modal.Title>
@@ -170,7 +157,6 @@ const Channels = () => {
         </Formik>
       </Modal>
 
-      {/* RENAME CHANNEL MODAL */}
       <Modal show={showRename} onHide={closeRename} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.renameTitle')}</Modal.Title>
