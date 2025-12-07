@@ -52,7 +52,7 @@ const ChatPage = ({ setIsAuth }) => {
   }, [currentChannelId, dispatch, t])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [channelMessages])
 
   useEffect(() => {
@@ -68,14 +68,11 @@ const ChatPage = ({ setIsAuth }) => {
     const username = localStorage.getItem('username') || 'me'
     leoProfanity.add(leoProfanity.getDictionary('ru'))
     const cleanText = leoProfanity.clean(text)
-    const message = {
-     body: cleanText,
-     channelId: currentChannelId,
-     username,
-    };
+
+    const message = { body: cleanText, channelId: currentChannelId, username }
 
     try {
-      const res = await fetch('/api/v1/messages', {
+      await fetch('/api/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +80,6 @@ const ChatPage = ({ setIsAuth }) => {
         },
         body: JSON.stringify(message),
       })
-      if (!res.ok) throw new Error('server')
     } catch {
       if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
       else toast.error(t('chat.errors.sendMessage'))
