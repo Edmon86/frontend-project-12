@@ -68,7 +68,11 @@ const ChatPage = ({ setIsAuth }) => {
     const username = localStorage.getItem('username') || 'me'
     leoProfanity.add(leoProfanity.getDictionary('ru'))
     const cleanText = leoProfanity.clean(text)
-    const message = { channelId: currentChannelId, username, text: cleanText }
+    const message = {
+     body: cleanText,
+     channelId: currentChannelId,
+     username,
+    };
 
     try {
       const res = await fetch('/api/v1/messages', {
@@ -127,7 +131,7 @@ const ChatPage = ({ setIsAuth }) => {
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
                   <strong>{m.username}: </strong>
-                  {m.text}
+                  {m.body}
                 </div>
               ))}
               <div ref={messagesEndRef} />

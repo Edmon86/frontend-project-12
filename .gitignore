@@ -4,4 +4,4 @@ node_modules/
 # Сборка фронтенда
 frontend/dist/
 
-.env
+.env.local
