@@ -98,15 +98,26 @@ const Channels = () => {
         {channels.map((c) => (
           <li
             key={c.id}
-            onClick={() => dispatch(setCurrentChannelId(c.id))}
             className={`list-group-item d-flex justify-content-between align-items-center ${
               c.id === currentChannelId ? 'active' : ''
             }`}
             style={{ cursor: 'pointer', position: 'relative' }}
           >
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <button
+              type="button"
+              onClick={() => dispatch(setCurrentChannelId(c.id))}
+              style={{
+                all: 'unset',
+                cursor: 'pointer',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                display: 'inline-block',
+                width: '100%',
+              }}
+            >
               # {c.name}
-            </span>
+            </button>
 
             {c.removable && (
               <Dropdown
