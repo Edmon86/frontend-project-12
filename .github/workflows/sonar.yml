@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # важно для SonarCloud
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -25,15 +25,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Если нет тестов — этот шаг пропускается автоматически
-      - name: Run tests
+      - name: Run tests (optional)
         run: npm test
         continue-on-error: true
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
-        with:
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
-          organization: ${{ secrets.SONAR_ORGANIZATION }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.sources=.
+            -Dsonar.host.url=https://sonarcloud.io
