@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { ErrorBoundary } from '@rollbar/react'
+
 import ChatPage from './pages/ChatPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-import NotFoundPage from './pages/NotFoundPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
-import { ToastContainer } from 'react-toastify'
+import NotFoundPage from './pages/NotFoundPage.jsx'
 import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'))
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setIsAuth(!!localStorage.getItem('userToken'))
-    }
+    const handleStorageChange = () => setIsAuth(!!localStorage.getItem('userToken'))
     window.addEventListener('storage', handleStorageChange)
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
+  // --- Тестовая ошибка для Rollbar после рендера ---
+  useEffect(() => {
+    // Закомментируй после проверки Rollbar
+    // throw new Error('Rollbar test error')
+  }, [])
+
   return (
-    <>
+    <ErrorBoundary>
       <Routes>
         <Route
           path="/"
@@ -36,9 +42,8 @@ const App = () => {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      {/* Контейнер для всплывающих уведомлений */}
       <ToastContainer position="top-right" autoClose={3000} />
-    </>
+    </ErrorBoundary>
   )
 }
 
