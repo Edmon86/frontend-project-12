@@ -139,6 +139,7 @@ const ChatPage = ({ setIsAuth }) => {
                 className="form-control me-2 flex-grow-1"
                 placeholder={t('messages.placeholder')}
                 autoComplete="off"
+                aria-label={t('messages.newMessage')}
               />
               <button type="submit" className="btn btn-primary">
                 {t('messages.send')}

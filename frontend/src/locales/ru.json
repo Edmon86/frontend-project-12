@@ -65,7 +65,8 @@
     "count_few": "{{count}} сообщения",
     "count_many": "{{count}} сообщений",
     "count_other": "{{count}} сообщений",
-    "send": "Отправить"
+    "send": "Отправить",
+    "newMessage": "Новое сообщение"
   },
 
   "chat": {
