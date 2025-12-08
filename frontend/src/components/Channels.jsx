@@ -153,7 +153,11 @@ const Channels = () => {
         >
           {({ isSubmitting }) => (
             <Form className="p-3">
+              <label htmlFor="name" className="form-label">
+                {t('channels.placeholder')}
+              </label>
               <Field
+                id="name"
                 name="name"
                 className="form-control"
                 placeholder={t('channels.placeholder')}
@@ -185,7 +189,10 @@ const Channels = () => {
           >
             {({ isSubmitting }) => (
               <Form className="p-3">
-                <Field name="name" className="form-control" autoFocus />
+                <label htmlFor="rename" className="form-label">
+                  {t('channels.placeholder')}
+                </label>
+                <Field id="rename" name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
                 <div className="text-end mt-3">
                   <Button type="submit" disabled={isSubmitting}>{t('channels.save')}</Button>
