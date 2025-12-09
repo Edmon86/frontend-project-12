@@ -20,6 +20,7 @@ const createSchema = (channels, t) =>
     name: Yup.string()
       .min(3, t('channels.errors.min3'))
       .max(20, t('channels.errors.max20'))
+      .required(t('channels.errors.required'))
       .test(
         'unique',
         t('channels.errors.unique'),
