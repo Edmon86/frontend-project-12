@@ -12,7 +12,7 @@ export const fetchChannels = createAsyncThunk(
       })
       return response.data.map(c => ({
         ...c,
-        removable: c.removable ?? true,
+        removable: c.removable,
       }))
     } catch {
       return rejectWithValue('Ошибка при загрузке каналов')
