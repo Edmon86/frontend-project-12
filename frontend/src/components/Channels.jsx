@@ -196,9 +196,9 @@ const Channels = () => {
                 </label>
                 <Field id="rename-channel-name" type="text" name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-                <button type="submit" style={{ display: 'none' }}></button>
+                <button style={{ display: 'none' }}></button>
                 <div className="text-end mt-3">
-                  <Button disabled={isSubmitting}>{t('channels.save')}</Button>
+                  <Button type="submit" disabled={isSubmitting}>{t('channels.save')}</Button>
                 </div>
               </Form>
             )}
