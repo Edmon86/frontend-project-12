@@ -161,11 +161,11 @@ const Channels = () => {
                 type="text"
                 name="name"
                 className="form-control"
-                //placeholder={t('channels.placeholder')}
+                placeholder={t('channels.placeholder')}
                 autoFocus
               />
               <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-              <button type="submit" style={{ display: 'none' }}></button>
+              <button type="submit" className="d-none"></button>
               <div className="text-end mt-3">
                 <Button type="submit" disabled={isSubmitting}>{t('channels.add')}</Button>
               </div>
