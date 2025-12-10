@@ -161,7 +161,7 @@ const Channels = () => {
                 type="text"
                 name="name"
                 className="form-control"
-                placeholder={t('channels.placeholder')}
+                //placeholder={t('channels.placeholder')}
                 autoFocus
               />
               <ErrorMessage name="name" component="div" className="text-danger mt-2" />
@@ -191,10 +191,10 @@ const Channels = () => {
           >
             {({ isSubmitting }) => (
               <Form className="p-3">
-                <label htmlFor="rename" className="form-label">
+                <label htmlFor="name" className="form-label">
                   {t('channels.placeholder')}
                 </label>
-                <Field id="rename" type="text" name="name" className="form-control" autoFocus />
+                <Field id="name" type="text" name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
                 <button type="submit" style={{ display: 'none' }}></button>
                 <div className="text-end mt-3">
