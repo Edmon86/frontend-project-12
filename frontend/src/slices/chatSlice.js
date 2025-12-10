@@ -12,7 +12,7 @@ export const fetchChannels = createAsyncThunk(
       })
       return response.data.map(c => ({
         ...c,
-        isRemovable: c.isRemovable ?? true,
+        removable: c.removable ?? true,
       }))
     } catch {
       return rejectWithValue('Ошибка при загрузке каналов')
@@ -47,7 +47,7 @@ export const addChannelServer = createAsyncThunk(
         { name },
         { headers: { Authorization: `Bearer ${token}` } },
       )
-      return { ...response.data, isRemovable: true }
+      return { ...response.data, removable: true }
     } catch {
       return rejectWithValue('Ошибка при добавлении канала')
     }
