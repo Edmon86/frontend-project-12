@@ -24,7 +24,7 @@ const createSchema = (channels, t) =>
       .test(
         'unique',
         t('channels.errors.unique'),
-        (value) => !channels.some((c) => c.name.toLowerCase() === value.toLowerCase()),
+        (value) => !channels.some((c) => c.name.toLowerCase() === value.toLowerCase())
       ),
   })
 
@@ -35,6 +35,7 @@ const Channels = () => {
 
   const [showAdd, setShowAdd] = useState(false)
   const [showRename, setShowRename] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
   const [selectedChannel, setSelectedChannel] = useState(null)
 
   const openAdd = () => setShowAdd(true)
@@ -45,6 +46,12 @@ const Channels = () => {
     setShowRename(true)
   }
   const closeRename = () => setShowRename(false)
+
+  const openDelete = (channel) => {
+    setSelectedChannel(channel)
+    setShowDelete(true)
+  }
+  const closeDelete = () => setShowDelete(false)
 
   const handleAddChannel = async(name, setSubmitting) => {
     const cleanName = leoProfanity.clean(name)
@@ -78,6 +85,7 @@ const Channels = () => {
     try {
       await dispatch(removeChannelServer(id)).unwrap()
       toast.success(t('channels.deleteSuccess'))
+      closeDelete()
     } catch {
       if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
       else toast.error(t('channels.deleteError'))
@@ -127,14 +135,14 @@ const Channels = () => {
               >
                 <Dropdown.Toggle size="sm" variant="variant">
                   <span className="visually-hidden">{t('channels.manage')}</span>
-                  <span aria-hidden="true">⋮</span>
+                  <span aria-hidden="true"> </span>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => openRename(c)}>
                     {t('channels.rename')}
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleDeleteChannel(c.id)}>
+                  <Dropdown.Item onClick={() => openDelete(c)}>
                     {t('channels.delete')}
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -144,6 +152,7 @@ const Channels = () => {
         ))}
       </ul>
 
+      {/* Add Channel Modal */}
       <Modal show={showAdd} onHide={closeAdd} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.addTitle')}</Modal.Title>
@@ -157,16 +166,8 @@ const Channels = () => {
         >
           {({ isSubmitting }) => (
             <Form className="p-3">
-              <label htmlFor="add-channel-name" className="form-label">
-                {t('channels.placeholder')}
-              </label>
-              <Field
-                id="add-channel-name"
-                type="text"
-                name="name"
-                className="form-control"
-                autoFocus
-              />
+              <label htmlFor="add-channel-name" className="form-label">{t('channels.placeholder')}</label>
+              <Field id="add-channel-name" type="text" name="name" className="form-control" autoFocus />
               <ErrorMessage name="name" component="div" className="text-danger mt-2" />
               <div className="text-end mt-3">
                 <Button type="submit" disabled={isSubmitting}>{t('channels.add')}</Button>
@@ -176,6 +177,7 @@ const Channels = () => {
         </Formik>
       </Modal>
 
+      {/* Rename Channel Modal */}
       <Modal show={showRename} onHide={closeRename} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('channels.renameTitle')}</Modal.Title>
@@ -193,9 +195,7 @@ const Channels = () => {
           >
             {({ isSubmitting }) => (
               <Form className="p-3">
-                <label htmlFor="rename-channel-name" className="form-label">
-                  {t('channels.placeholder')}
-                </label>
+                <label htmlFor="rename-channel-name" className="form-label">{t('channels.placeholder')}</label>
                 <Field id="rename-channel-name" type="text" name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
                 <div className="text-end mt-3">
@@ -205,6 +205,25 @@ const Channels = () => {
             )}
           </Formik>
         )}
+      </Modal>
+
+      {/* Delete Channel Modal */}
+      <Modal show={showDelete} onHide={closeDelete} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{t('channels.delete')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {t('channels.deleteConfirm', { name: selectedChannel?.name })}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDelete}>{t('channels.cancel')}</Button>
+          <Button
+            variant="danger"
+            onClick={() => handleDeleteChannel(selectedChannel.id)}
+          >
+            {t('channels.delete')}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   )
