@@ -125,13 +125,11 @@ const Channels = () => {
                 style={{ right: '10px' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <Dropdown.Toggle size="sm" variant="secondary">
-                  <span style={{ position: 'absolute', left: '-9999px' }}>
-                   {t('channels.manage')}
-                  </span>
+                <Dropdown.Toggle size="sm" variant="variant">
+                  <span className="visually-hidden">{t('channels.manage')}</span>
+                  <span aria-hidden="true">⋮</span>
                 </Dropdown.Toggle>
 
-                  
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => openRename(c)}>
                     {t('channels.rename')}
@@ -167,11 +165,9 @@ const Channels = () => {
                 type="text"
                 name="name"
                 className="form-control"
-                //placeholder={t('channels.placeholder')}
                 autoFocus
               />
               <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-              <button type="submit" className="d-none"></button>
               <div className="text-end mt-3">
                 <Button type="submit" disabled={isSubmitting}>{t('channels.add')}</Button>
               </div>
@@ -202,7 +198,6 @@ const Channels = () => {
                 </label>
                 <Field id="rename-channel-name" type="text" name="name" className="form-control" autoFocus />
                 <ErrorMessage name="name" component="div" className="text-danger mt-2" />
-                <button type="submit" style={{ display: 'none' }}></button>
                 <div className="text-end mt-3">
                   <Button type="submit" disabled={isSubmitting}>{t('channels.save')}</Button>
                 </div>
