@@ -125,7 +125,8 @@ const Channels = () => {
                 style={{ right: '10px' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <Dropdown.Toggle size="sm" />
+                <Dropdown.Toggle size="sm" variant="variant" aria-label={t('channels.manage')} />
+                  
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => openRename(c)}>
                     {t('channels.rename')}
