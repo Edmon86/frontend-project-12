@@ -14,7 +14,8 @@ const LanguageSwitcher = () => {
   return (
     <Dropdown>
       <Dropdown.Toggle variant="outline-secondary" size="sm">
-        🌍 {current === 'ru' ? '🇷🇺 RU' : '🇬🇧 EN'}
+        🌍 
+        {current === 'ru' ? '🇷🇺 RU' : '🇬🇧 EN'}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
