@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import avatar from '../assets/avatar.jpg'
@@ -43,7 +43,7 @@ const LoginPage = ({ setIsAuth }) => {
                   <Formik
                     initialValues={{ username: '', password: '' }}
                     validationSchema={LoginSchema}
-                    onSubmit={async(values, { setStatus }) => {
+                    onSubmit={async (values, { setStatus }) => {
                       const { username, password } = values
                       try {
                         const response = await fetch('/api/v1/login', {
@@ -60,7 +60,8 @@ const LoginPage = ({ setIsAuth }) => {
                         localStorage.setItem('userToken', data.token)
                         localStorage.setItem('username', data.username)
                         setIsAuth(true)
-                      } catch {
+                      } 
+                        catch {
                         setStatus(t('login.error'))
                       }
                     }}
@@ -92,7 +93,8 @@ const LoginPage = ({ setIsAuth }) => {
 
               {/* CARD FOOTER */}
               <div className="card-footer p-4 text-center">
-                <span>{t('login.noAccount')}</span> <a href="/signup">{t('login.signup')}</a>
+                <span>{t('login.noAccount')}</span> 
+                <a href="/signup">{t('login.signup')}</a>
               </div>
             </div>
           </div>
