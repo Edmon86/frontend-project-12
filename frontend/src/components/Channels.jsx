@@ -42,21 +42,21 @@ const Channels = () => {
   const openAdd = () => setShowAdd(true)
   const closeAdd = () => setShowAdd(false)
 
-  const openRename = channel => {
+  const openRename = (channel) => {
     setSelectedChannel(channel)
     setShowRename(true)
   }
 
   const closeRename = () => setShowRename(false)
 
-  const openDelete = channel => {
+  const openDelete = (channel) => {
     setSelectedChannel(channel)
     setShowDelete(true)
   }
 
   const closeDelete = () => setShowDelete(false)
 
-  const handleAddChannel = async(name, setSubmitting) => {
+  const handleAddChannel = async (name, setSubmitting) => {
     const cleanName = leoProfanity.clean(name)
     try {
       await dispatch(addChannelServer(cleanName)).unwrap()
@@ -76,7 +76,7 @@ const Channels = () => {
     }
   }
 
-  const handleRenameChannel = async(id, name, setSubmitting) => {
+  const handleRenameChannel = async (id, name, setSubmitting) => {
     const cleanName = leoProfanity.clean(name)
     try {
       await dispatch(
@@ -101,7 +101,7 @@ const Channels = () => {
     }
   }
 
-  const handleDeleteChannel = async(id) => {
+  const handleDeleteChannel = async (id) => {
     try {
       await dispatch(removeChannelServer(id)).unwrap()
       toast.success(t('channels.deleteSuccess'))
@@ -193,7 +193,7 @@ const Channels = () => {
         <Formik
           initialValues={{ name: '' }}
           validationSchema={createSchema(channels, t)}
-          onSubmit={async({ name }, { setSubmitting }) => {
+          onSubmit={async ({ name }, { setSubmitting }) => {
             await handleAddChannel(name, setSubmitting)
           }}
         >
@@ -243,7 +243,7 @@ const Channels = () => {
               channels.filter(c => c.id !== selectedChannel.id),
               t,
             )}
-            onSubmit={async({ name }, { setSubmitting }) => {
+            onSubmit={async ({ name }, { setSubmitting }) => {
               await handleRenameChannel(
                 selectedChannel.id,
                 name,
