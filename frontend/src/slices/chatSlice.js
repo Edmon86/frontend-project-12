@@ -4,7 +4,7 @@ import axios from 'axios'
 // === Загрузка каналов ===
 export const fetchChannels = createAsyncThunk(
   'chat/fetchChannels',
-  async(_, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken')
       const response = await axios.get('/api/v1/channels', {
@@ -14,7 +14,8 @@ export const fetchChannels = createAsyncThunk(
         ...c,
         removable: c.removable,
       }))
-    } catch {
+    }
+    catch {
       return rejectWithValue('Ошибка при загрузке каналов')
     }
   },
@@ -23,14 +24,15 @@ export const fetchChannels = createAsyncThunk(
 // === Загрузка сообщений ===
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
-  async(channelId, { rejectWithValue }) => {
+  async (channelId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken')
       const response = await axios.get(`/api/v1/messages?channelId=${channelId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       return response.data
-    } catch {
+    }
+    catch {
       return rejectWithValue('Ошибка при загрузке сообщений')
     }
   },
@@ -39,7 +41,7 @@ export const fetchMessages = createAsyncThunk(
 // === Добавить канал ===
 export const addChannelServer = createAsyncThunk(
   'chat/addChannelServer',
-  async(name, { rejectWithValue }) => {
+  async (name, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken')
       const response = await axios.post(
@@ -48,7 +50,8 @@ export const addChannelServer = createAsyncThunk(
         { headers: { Authorization: `Bearer ${token}` } },
       )
       return { ...response.data, removable: true }
-    } catch {
+    }
+    catch {
       return rejectWithValue('Ошибка при добавлении канала')
     }
   },
@@ -57,7 +60,7 @@ export const addChannelServer = createAsyncThunk(
 // === Переименовать канал ===
 export const renameChannelServer = createAsyncThunk(
   'chat/renameChannelServer',
-  async({ id, name }, { rejectWithValue }) => {
+  async ({ id, name }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken')
       await axios.patch(
@@ -66,7 +69,8 @@ export const renameChannelServer = createAsyncThunk(
         { headers: { Authorization: `Bearer ${token}` } },
       )
       return { id, name }
-    } catch {
+    }
+    catch {
       return rejectWithValue('Ошибка при переименовании канала')
     }
   },
@@ -75,14 +79,15 @@ export const renameChannelServer = createAsyncThunk(
 // === Удалить канал ===
 export const removeChannelServer = createAsyncThunk(
   'chat/removeChannelServer',
-  async(id, { rejectWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('userToken')
       await axios.delete(`/api/v1/channels/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       return id
-    } catch {
+    }
+    catch {
       return rejectWithValue('Ошибка при удалении канала')
     }
   },
