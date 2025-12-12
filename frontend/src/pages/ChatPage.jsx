@@ -28,8 +28,8 @@ const ChatPage = ({ setIsAuth }) => {
       .catch(() => {
         if (!navigator.onLine) {
           toast.error(t('chat.errors.noNetwork'))
-        } 
-          else {
+} 
+        else {
           toast.error(t('chat.errors.loadChannels'))
         }
       })
@@ -43,8 +43,8 @@ const ChatPage = ({ setIsAuth }) => {
       .catch(() => {
         if (!navigator.onLine) {
           toast.error(t('chat.errors.noNetwork'))
-        } 
-          else {
+} 
+        else {
           toast.error(t('chat.errors.loadMessages'))
         }
       })
@@ -88,12 +88,12 @@ const ChatPage = ({ setIsAuth }) => {
         },
         body: JSON.stringify(message),
       })
-    } 
-      catch {
+} 
+    catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      } 
-        else {
+} 
+      else {
         toast.error(t('chat.errors.sendMessage'))
       }
     }
@@ -138,12 +138,9 @@ const ChatPage = ({ setIsAuth }) => {
                 className="mb-3 pb-2"
                 style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}
               >
-                #
-                
-                {currentChannel.name}
-                
+                #                
+                {currentChannel.name}                
                 •
-                
                 {t('messages.count', { count: messageCount })}
               </div>
             )}
