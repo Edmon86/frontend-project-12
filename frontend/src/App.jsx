@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { ErrorBoundary } from '@rollbar/react'
@@ -18,7 +18,7 @@ const App = () => {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
-  // --- Тестовая ошибка для Rollbar после рендера ---
+  // Тестовая ошибка для Rollbar после рендера
   useEffect(() => {
     // Закомментируй после проверки Rollbar
     // throw new Error('Rollbar test error')
