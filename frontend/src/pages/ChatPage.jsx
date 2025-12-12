@@ -148,9 +148,9 @@ const ChatPage = ({ setIsAuth }) => {
             <div className="flex-grow-1 overflow-auto mb-3">
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
-                  <strong>{
-                  m.username}
-                  : 
+                  <strong>
+                    {m.username}
+                    : 
                   </strong>
                   {m.body}
                 </div>
