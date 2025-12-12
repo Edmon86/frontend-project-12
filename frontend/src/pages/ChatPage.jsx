@@ -13,13 +13,13 @@ const ChatPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { channels, messages, currentChannelId } = useSelector(state => state.chat)
+  const { channels, messages, currentChannelId } = useSelector((state) => state.chat)
 
   const [status, setStatus] = useState('connected')
   const messagesEndRef = useRef(null)
 
-  const currentChannel = channels.find(ch => ch.id === currentChannelId)
-  const channelMessages = messages.filter(m => m.channelId === currentChannelId)
+  const currentChannel = channels.find((ch) => ch.id === currentChannelId)
+  const channelMessages = messages.filter((m) => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
 
   useEffect(() => {
@@ -28,8 +28,7 @@ const ChatPage = ({ setIsAuth }) => {
       .catch(() => {
         if (!navigator.onLine) {
           toast.error(t('chat.errors.noNetwork'))
-        } 
-        else {
+        } else {
           toast.error(t('chat.errors.loadChannels'))
         }
       })
@@ -43,8 +42,7 @@ const ChatPage = ({ setIsAuth }) => {
       .catch(() => {
         if (!navigator.onLine) {
           toast.error(t('chat.errors.noNetwork'))
-        } 
-        else {
+        } else {
           toast.error(t('chat.errors.loadMessages'))
         }
       })
@@ -84,16 +82,14 @@ const ChatPage = ({ setIsAuth }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(message),
       })
-    } 
-    catch {
+    } catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      } 
-      else {
+      } else {
         toast.error(t('chat.errors.sendMessage'))
       }
     }
@@ -138,8 +134,8 @@ const ChatPage = ({ setIsAuth }) => {
                 className="mb-3 pb-2"
                 style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}
               >
-                #                
-                {currentChannel.name}                
+                #
+                {currentChannel.name}
                 •
                 {t('messages.count', { count: messageCount })}
               </div>
@@ -148,10 +144,7 @@ const ChatPage = ({ setIsAuth }) => {
             <div className="flex-grow-1 overflow-auto mb-3">
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
-                  <strong>
-                    {m.username}
-                    : 
-                  </strong>
+                  <strong>{m.username}: </strong>
                   {m.body}
                 </div>
               ))}
