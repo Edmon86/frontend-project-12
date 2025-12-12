@@ -13,21 +13,24 @@ const ChatPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { channels, messages, currentChannelId } = useSelector(state => state.chat)
+  const { channels, messages, currentChannelId } = useSelector((state) => state.chat)
 
   const [status, setStatus] = useState('connected')
   const messagesEndRef = useRef(null)
 
-  const currentChannel = channels.find(ch => ch.id === currentChannelId)
-  const channelMessages = messages.filter(m => m.channelId === currentChannelId)
+  const currentChannel = channels.find((ch) => ch.id === currentChannelId)
+  const channelMessages = messages.filter((m) => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
 
   useEffect(() => {
     dispatch(fetchChannels())
       .unwrap()
       .catch(() => {
-        if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
-        else toast.error(t('chat.errors.loadChannels'))
+        if (!navigator.onLine) {
+          toast.error(t('chat.errors.noNetwork'))
+        } else {
+          toast.error(t('chat.errors.loadChannels'))
+        }
       })
   }, [dispatch, t])
 
@@ -37,8 +40,11 @@ const ChatPage = ({ setIsAuth }) => {
     dispatch(fetchMessages(currentChannelId))
       .unwrap()
       .catch(() => {
-        if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
-        else toast.error(t('chat.errors.loadMessages'))
+        if (!navigator.onLine) {
+          toast.error(t('chat.errors.noNetwork'))
+        } else {
+          toast.error(t('chat.errors.loadMessages'))
+        }
       })
 
     const handleNewMessage = (message) => {
@@ -76,14 +82,16 @@ const ChatPage = ({ setIsAuth }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(message),
       })
-    } 
-      catch {
-      if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
-      else toast.error(t('chat.errors.sendMessage'))
+    } catch {
+      if (!navigator.onLine) {
+        toast.error(t('chat.errors.noNetwork'))
+      } else {
+        toast.error(t('chat.errors.sendMessage'))
+      }
     }
 
     e.target.reset()
@@ -112,17 +120,24 @@ const ChatPage = ({ setIsAuth }) => {
       </nav>
 
       <div className="d-flex justify-content-center flex-grow-1 py-4">
-        <div className="d-flex flex-column flex-md-row bg-white shadow rounded p-3" style={{ width: '90%', maxWidth: '1500px', minHeight: '80vh' }}>
+        <div
+          className="d-flex flex-column flex-md-row bg-white shadow rounded p-3"
+          style={{ width: '90%', maxWidth: '1500px', minHeight: '80vh' }}
+        >
           <div className="border-end pe-3 mb-3 mb-md-0" style={{ width: '250px' }}>
             <Channels />
           </div>
 
           <div className="flex-grow-1 ps-0 ps-md-4 d-flex flex-column">
             {currentChannel && (
-              <div className="mb-3 pb-2" style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}>
-                
-                #{currentChannel.name} 
-                • 
+              <div
+                className="mb-3 pb-2"
+                style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}
+              >
+                #{currentChannel.name}
+                {' '}
+                •
+                {' '}
                 {t('messages.count', { count: messageCount })}
               </div>
             )}
@@ -130,10 +145,7 @@ const ChatPage = ({ setIsAuth }) => {
             <div className="flex-grow-1 overflow-auto mb-3">
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
-                  <strong>
-                  {m.username}
-                  : 
-                  </strong>
+                  <strong>{m.username}: </strong>
                   {m.body}
                 </div>
               ))}
