@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice'
 import { useNavigate } from 'react-router-dom'
@@ -13,13 +13,13 @@ const ChatPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { channels, messages, currentChannelId } = useSelector((state) => state.chat)
+  const { channels, messages, currentChannelId } = useSelector(state => state.chat)
 
   const [status, setStatus] = useState('connected')
   const messagesEndRef = useRef(null)
 
-  const currentChannel = channels.find((ch) => ch.id === currentChannelId)
-  const channelMessages = messages.filter((m) => m.channelId === currentChannelId)
+  const currentChannel = channels.find(ch => ch.id === currentChannelId)
+  const channelMessages = messages.filter(m => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const ChatPage = ({ setIsAuth }) => {
     socket.on('disconnect', () => setStatus('disconnected'))
   }, [])
 
-  const handleSendMessage = async(e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
     const text = e.target.elements.message.value.trim()
     if (!text) return
@@ -80,7 +80,8 @@ const ChatPage = ({ setIsAuth }) => {
         },
         body: JSON.stringify(message),
       })
-    } catch {
+    } 
+      catch {
       if (!navigator.onLine) toast.error(t('chat.errors.noNetwork'))
       else toast.error(t('chat.errors.sendMessage'))
     }
@@ -119,14 +120,20 @@ const ChatPage = ({ setIsAuth }) => {
           <div className="flex-grow-1 ps-0 ps-md-4 d-flex flex-column">
             {currentChannel && (
               <div className="mb-3 pb-2" style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}>
-                #{currentChannel.name} • {t('messages.count', { count: messageCount })}
+                
+                #{currentChannel.name} 
+                • 
+                {t('messages.count', { count: messageCount })}
               </div>
             )}
 
             <div className="flex-grow-1 overflow-auto mb-3">
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
-                  <strong>{m.username}: </strong>
+                  <strong>
+                  {m.username}
+                  : 
+                  </strong>
                   {m.body}
                 </div>
               ))}
