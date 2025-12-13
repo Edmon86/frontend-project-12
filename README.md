@@ -15,16 +15,12 @@
 ## Запуск
 #### Установка зависимостей
 make install
-
 #### Сборка фронтенда
 make build
-
 #### Запуск сервера
 make start
-
 #### Проверка линтинга
 make lint
-
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Edmon86/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Edmon86/frontend-project-12/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Edmon86_frontend-project-12&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Edmon86_frontend-project-12)
