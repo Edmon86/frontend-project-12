@@ -2,7 +2,7 @@
 ## О проекте
 Дипломный проект модуля #5: real-time чат на React/Redux с использованием WebSockets, REST API, Formik и react-bootstrap.
 **Цель:** показать практическое использование React с хуками, Redux Toolkit, авторизацию, роутинг и работу с формами.
-**Технологии:**
+##Технологии:
 - React (хуки)
 - Redux Toolkit
 - Formik
@@ -11,16 +11,13 @@
 - react-bootstrap
 - Vite
 ## Запуск
-# Установка зависимостей
+#### Установка зависимостей
 make install
-
-# Сборка фронтенда
+#### Сборка фронтенда
 make build
-
-# Запуск сервера
+#### Запуск сервера
 make start
-
-# Проверка линтинга
+#### Проверка линтинга
 make lint
 
 ### Hexlet tests and linter status:
