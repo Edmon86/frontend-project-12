@@ -48,10 +48,12 @@ const Channels = () => {
       await dispatch(addChannelServer(cleanName)).unwrap()
       toast.success(t('channels.addSuccess'))
       closeAdd()
-    } catch {
+    }
+    catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      } else {
+      }
+      else {
         toast.error(t('channels.addError'))
       }
     } finally {
@@ -65,10 +67,12 @@ const Channels = () => {
       await dispatch(renameChannelServer({ id, name: cleanName })).unwrap()
       toast.success(t('channels.renameSuccess'))
       closeRename()
-    } catch {
+    }
+    catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      } else {
+      }
+      else {
         toast.error(t('channels.renameError'))
       }
     } finally {
@@ -81,10 +85,12 @@ const Channels = () => {
       await dispatch(removeChannelServer(id)).unwrap()
       toast.success(t('channels.deleteSuccess'))
       closeDelete()
-    } catch {
+    }
+    catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      } else {
+      }
+      else {
         toast.error(t('channels.deleteError'))
       }
     }
@@ -146,27 +152,27 @@ const Channels = () => {
       </ul>
 
       {/* Модалки */}
-      <AddChannelModal 
-        show={showAdd} 
-        handleClose={closeAdd} 
-        channels={channels} 
-        t={t} 
-        handleAddChannel={handleAddChannel} 
+      <AddChannelModal
+        show={showAdd}
+        handleClose={closeAdd}
+        channels={channels}
+        t={t}
+        handleAddChannel={handleAddChannel}
       />
       <RenameChannelModal 
-        show={showRename} 
-        handleClose={closeRename} 
-        channels={channels.filter(c => c.id !== selectedChannel?.id)} 
-        selectedChannel={selectedChannel} 
-        t={t} 
-        handleRenameChannel={handleRenameChannel} 
+        show={showRename}
+        handleClose={closeRename}
+        channels={channels.filter(c => c.id !== selectedChannel?.id)}
+        selectedChannel={selectedChannel}
+        t={t}
+        handleRenameChannel={handleRenameChannel}
       />
       <DeleteChannelModal 
-        show={showDelete} 
-        handleClose={closeDelete} 
-        selectedChannel={selectedChannel} 
-        t={t} 
-        handleDeleteChannel={handleDeleteChannel} 
+        show={showDelete}
+        handleClose={closeDelete}
+        selectedChannel={selectedChannel}
+        t={t}
+        handleDeleteChannel={handleDeleteChannel}
       />
     </div>
   )
