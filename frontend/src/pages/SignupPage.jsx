@@ -6,8 +6,7 @@ import getSignupSchema from '../validation/signupSchema'
 const SignupPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
 
-const handleSignup = (setIsAuth, t) => async (values, { setStatus }) => {
-
+  const handleSignup = (setIsAuth, t) => async (values, { setStatus }) => {
     try {
       const res = await fetch('/api/v1/signup', {
         method: 'POST',
