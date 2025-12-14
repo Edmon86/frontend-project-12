@@ -1,23 +1,40 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import avatar from '../assets/avatar.jpg'
 import { useTranslation } from 'react-i18next'
+import getSignupSchema from '../validation/signupSchema'
 
 const SignupPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
 
-  const SignupSchema = Yup.object().shape({
-    username: Yup.string()
-      .required(t('signup.usernameRequired'))
-      .min(3, t('signup.errors.min3'))
-      .max(20, t('signup.errors.max20')),
-    password: Yup.string()
-      .required(t('signup.passwordRequired'))
-      .min(6, t('signup.errors.min6')),
-    confirmPassword: Yup.string()
-      .required(t('signup.confirmPasswordRequired'))
-      .oneOf([Yup.ref('password')], t('signup.errors.passwordsMatch')),
-  })
+  const handleSignup = (setIsAuth, t) => async (values, { setStatus }) => {
+  
+  try {
+    const res = await fetch('/api/v1/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: values.username,
+        password: values.password,
+      }),
+    })
+
+    if (res.status === 409) {
+      setStatus(t('signup.errors.usernameExists'))
+      return
+    }
+
+    if (!res.ok) {
+      throw new Error('Ошибка регистрации')
+    }
+
+    const data = await res.json()
+    localStorage.setItem('userToken', data.token)
+    localStorage.setItem('username', data.username)
+    setIsAuth(true)
+  } catch {
+    setStatus(t('signup.errors.general'))
+  }
+}
 
   return (
     <div className="d-flex flex-column h-100">
@@ -49,37 +66,8 @@ const SignupPage = ({ setIsAuth }) => {
 
                   <Formik
                     initialValues={{ username: '', password: '', confirmPassword: '' }}
-                    validationSchema={SignupSchema}
-                    onSubmit={async (values, { setStatus }) => {
-                      try {
-                        const res = await fetch('/api/v1/signup', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            username: values.username,
-                            password: values.password,
-                          }),
-                        })
-
-                        if (res.status === 409) {
-                          setStatus(t('signup.errors.usernameExists'))
-                          return
-                        }
-
-                        if (!res.ok) {
-                          throw new Error('Ошибка регистрации')
-                        }
-
-                        const data = await res.json()
-                        localStorage.setItem('userToken', data.token)
-                        localStorage.setItem('username', data.username)
-
-                        setIsAuth(true)
-                      }
-                      catch {
-                        setStatus(t('signup.errors.general'))
-                      }
-                    }}
+                    validationSchema={getSignupSchema(t)}
+                    onSubmit={handleSignup(setIsAuth, t)}
                   >
                     {({ status }) => (
                       <Form>
@@ -115,7 +103,7 @@ const SignupPage = ({ setIsAuth }) => {
               {/* CARD FOOTER */}
               <div className="card-footer p-4 text-center">
                 <span>{t('signup.haveAccount')}</span>
-                <a href="/login">{t('signup.login')}</a>
+                <a href="/login" className="ms-1">{t('signup.login')}</a>
               </div>
             </div>
           </div>

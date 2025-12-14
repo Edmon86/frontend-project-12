@@ -43,6 +43,7 @@
     "save": "Save",
     "rename": "Rename",
     "delete": "Delete",
+    "cancel": "cancel",
     "errors": {
       "min3": "At least 3 characters",
       "max20": "Maximum 20 characters",

@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import App from './App.jsx'
-import { store } from './store'
+import { store } from './store/store'
 import { Provider as RollbarProvider } from '@rollbar/react'
 
 // Конфигурация Rollbar

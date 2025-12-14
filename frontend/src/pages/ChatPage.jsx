@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchChannels, fetchMessages, addMessage } from '../slices/chatSlice'
+import { fetchChannels, fetchMessages, addMessage } from '../store/slices/chatSlice'
 import { useNavigate } from 'react-router-dom'
 import Channels from '../components/Channels.jsx'
+import Navbar from '../components/Navbar.jsx'
 import socket from '../socket.js'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
@@ -17,10 +18,17 @@ const ChatPage = ({ setIsAuth }) => {
 
   const [status, setStatus] = useState('connected')
   const messagesEndRef = useRef(null)
+  const messageInputRef = useRef(null)
 
   const currentChannel = channels.find(ch => ch.id === currentChannelId)
   const channelMessages = messages.filter(m => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
+  
+  useEffect(() => {
+    if (currentChannelId) {  
+      messageInputRef.current?.focus()
+    }
+  }, [currentChannelId])
 
   useEffect(() => {
     dispatch(fetchChannels())
@@ -109,19 +117,7 @@ const ChatPage = ({ setIsAuth }) => {
 
   return (
     <div className="d-flex flex-column h-100 bg-light">
-      <nav className="navbar navbar-light bg-white shadow-sm p-3">
-        <div className="container d-flex justify-content-between">
-          <h5 className="mb-0">{t('appName')}</h5>
-          <div>
-            <span className={`me-3 text-${status === 'connected' ? 'success' : 'danger'}`}>
-              {status === 'connected' ? t('messages.connected') : t('messages.disconnected')}
-            </span>
-            <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
-              {t('logout')}
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar status={status} onLogout={handleLogout} />
 
       <div className="d-flex justify-content-center flex-grow-1 py-4">
         <div
@@ -145,7 +141,9 @@ const ChatPage = ({ setIsAuth }) => {
               </div>
             )}
 
-            <div className="flex-grow-1 overflow-auto mb-3">
+            <div className="flex-grow-1 overflow-auto mb-3" 
+              style={{ maxHeight: '690px', scrollBehavior: 'smooth' }} // ограничиваем высоту блока сообщений, плавный скролл
+            >
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
                   <strong>
@@ -160,10 +158,10 @@ const ChatPage = ({ setIsAuth }) => {
 
             <form onSubmit={handleSendMessage} className="d-flex">
               <input
+                ref={messageInputRef}
                 name="message"
                 className="form-control me-2 flex-grow-1"
                 placeholder={t('messages.placeholder')}
-                autoComplete="off"
                 aria-label={t('messages.newMessage')}
               />
               <button type="submit" className="btn btn-primary">

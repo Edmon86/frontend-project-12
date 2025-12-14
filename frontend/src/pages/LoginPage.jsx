@@ -1,15 +1,34 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import avatar from '../assets/avatar.jpg'
 import { useTranslation } from 'react-i18next'
+import getLoginSchema from '../validation/loginSchema'
 
 const LoginPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
 
-  const LoginSchema = Yup.object().shape({
-    username: Yup.string().required(t('login.usernameRequired')),
-    password: Yup.string().required(t('login.passwordRequired')),
-  })
+  const handleLogin = async (values, { setStatus }) => {
+    const { username, password } = values
+
+    try {
+      const response = await fetch('/api/v1/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+
+      if (!response.ok) {
+        throw new Error()
+      }
+
+      const data = await response.json()
+      localStorage.setItem('userToken', data.token)
+      localStorage.setItem('username', data.username)
+      setIsAuth(true)
+    }
+    catch {
+      setStatus(t('login.error'))
+    }
+  }
 
   return (
     <div className="d-flex flex-column h-100">
@@ -41,29 +60,8 @@ const LoginPage = ({ setIsAuth }) => {
 
                   <Formik
                     initialValues={{ username: '', password: '' }}
-                    validationSchema={LoginSchema}
-                    onSubmit={async (values, { setStatus }) => {
-                      const { username, password } = values
-                      try {
-                        const response = await fetch('/api/v1/login', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ username, password }),
-                        })
-
-                        if (!response.ok) {
-                          throw new Error('Ошибка входа')
-                        }
-
-                        const data = await response.json()
-                        localStorage.setItem('userToken', data.token)
-                        localStorage.setItem('username', data.username)
-                        setIsAuth(true)
-                      }
-                      catch {
-                        setStatus(t('login.error'))
-                      }
-                    }}
+                    validationSchema={getLoginSchema(t)}
+                    onSubmit={handleLogin}
                   >
                     {({ status }) => (
                       <Form>
@@ -93,7 +91,7 @@ const LoginPage = ({ setIsAuth }) => {
               {/* CARD FOOTER */}
               <div className="card-footer p-4 text-center">
                 <span>{t('login.noAccount')}</span>
-                <a href="/signup">{t('login.signup')}</a>
+                <a href="/signup" className="ms-1">{t('login.signup')}</a>
               </div>
             </div>
           </div>

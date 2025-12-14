@@ -1,33 +1,21 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Dropdown, Modal } from 'react-bootstrap'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
+import { Button, Dropdown } from 'react-bootstrap'
 import {
   setCurrentChannelId,
   addChannelServer,
   renameChannelServer,
   removeChannelServer,
-} from '../slices/chatSlice'
+} from '../store/slices/chatSlice'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import LanguageSwitcher from './LanguageSwitcher'
 import leoProfanity from 'leo-profanity'
 
-const createSchema = (channels, t) =>
-  Yup.object({
-    name: Yup.string()
-      .min(3, t('channels.errors.min3'))
-      .max(20, t('channels.errors.max20'))
-      .required(t('channels.errors.required'))
-      .test(
-        'unique',
-        t('channels.errors.unique'),
-        value =>
-          !channels.some(c => c.name.toLowerCase() === value.toLowerCase()),
-      ),
-  })
+import AddChannelModal from './modals/AddChannelModal'
+import RenameChannelModal from './modals/RenameChannelModal'
+import DeleteChannelModal from './modals/DeleteChannelModal'
 
 const Channels = () => {
   const { t } = useTranslation()
@@ -46,14 +34,12 @@ const Channels = () => {
     setSelectedChannel(channel)
     setShowRename(true)
   }
-
   const closeRename = () => setShowRename(false)
 
   const openDelete = (channel) => {
     setSelectedChannel(channel)
     setShowDelete(true)
   }
-
   const closeDelete = () => setShowDelete(false)
 
   const handleAddChannel = async (name, setSubmitting) => {
@@ -62,16 +48,13 @@ const Channels = () => {
       await dispatch(addChannelServer(cleanName)).unwrap()
       toast.success(t('channels.addSuccess'))
       closeAdd()
-    }
-    catch {
+    } catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      }
-      else {
+      } else {
         toast.error(t('channels.addError'))
       }
-    }
-    finally {
+    } finally {
       setSubmitting(false)
     }
   }
@@ -79,24 +62,16 @@ const Channels = () => {
   const handleRenameChannel = async (id, name, setSubmitting) => {
     const cleanName = leoProfanity.clean(name)
     try {
-      await dispatch(
-        renameChannelServer({
-          id,
-          name: cleanName,
-        }),
-      ).unwrap()
+      await dispatch(renameChannelServer({ id, name: cleanName })).unwrap()
       toast.success(t('channels.renameSuccess'))
       closeRename()
-    }
-    catch {
+    } catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      }
-      else {
+      } else {
         toast.error(t('channels.renameError'))
       }
-    }
-    finally {
+    } finally {
       setSubmitting(false)
     }
   }
@@ -106,12 +81,10 @@ const Channels = () => {
       await dispatch(removeChannelServer(id)).unwrap()
       toast.success(t('channels.deleteSuccess'))
       closeDelete()
-    }
-    catch {
+    } catch {
       if (!navigator.onLine) {
         toast.error(t('chat.errors.noNetwork'))
-      }
-      else {
+      } else {
         toast.error(t('channels.deleteError'))
       }
     }
@@ -121,12 +94,9 @@ const Channels = () => {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h6 className="m-0">{t('channels.title')}</h6>
-
         <div className="d-flex gap-2">
           <LanguageSwitcher />
-          <Button size="sm" onClick={openAdd}>
-            +
-          </Button>
+          <Button size="sm" onClick={openAdd}>+</Button>
         </div>
       </div>
 
@@ -134,9 +104,7 @@ const Channels = () => {
         {channels.map(c => (
           <li
             key={c.id}
-            className={`list-group-item d-flex justify-content-between align-items-center ${
-              c.id === currentChannelId ? 'active' : ''
-            }`}
+            className={`list-group-item d-flex justify-content-between align-items-center ${c.id === currentChannelId ? 'active' : ''}`}
             style={{ cursor: 'pointer', position: 'relative' }}
           >
             <button
@@ -163,20 +131,13 @@ const Channels = () => {
                 onClick={e => e.stopPropagation()}
               >
                 <Dropdown.Toggle size="sm" variant="variant">
-                  <span className="visually-hidden">
-                    {t('channels.manage')}
-                  </span>
+                  <span className="visually-hidden">{t('channels.manage')}</span>
                   <span aria-hidden="true"> </span>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => openRename(c)}>
-                    {t('channels.rename')}
-                  </Dropdown.Item>
-
-                  <Dropdown.Item onClick={() => openDelete(c)}>
-                    {t('channels.delete')}
-                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => openRename(c)}>{t('channels.rename')}</Dropdown.Item>
+                  <Dropdown.Item onClick={() => openDelete(c)}>{t('channels.delete')}</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             )}
@@ -184,132 +145,29 @@ const Channels = () => {
         ))}
       </ul>
 
-      {/* Add Channel Modal */}
-      <Modal show={showAdd} onHide={closeAdd} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('channels.addTitle')}</Modal.Title>
-        </Modal.Header>
-
-        <Formik
-          initialValues={{ name: '' }}
-          validationSchema={createSchema(channels, t)}
-          onSubmit={async ({ name }, { setSubmitting }) => {
-            await handleAddChannel(name, setSubmitting)
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form className="p-3">
-              <label
-                htmlFor="add-channel-name"
-                className="form-label"
-              >
-                {t('channels.placeholder')}
-              </label>
-
-              <Field
-                id="add-channel-name"
-                type="text"
-                name="name"
-                className="form-control"
-                autoFocus
-              />
-
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="text-danger mt-2"
-              />
-
-              <div className="text-end mt-3">
-                <Button type="submit" disabled={isSubmitting}>
-                  {t('channels.add')}
-                </Button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal>
-
-      {/* Rename Channel Modal */}
-      <Modal show={showRename} onHide={closeRename} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('channels.renameTitle')}</Modal.Title>
-        </Modal.Header>
-
-        {selectedChannel && (
-          <Formik
-            initialValues={{ name: selectedChannel.name }}
-            validationSchema={createSchema(
-              channels.filter(c => c.id !== selectedChannel.id),
-              t,
-            )}
-            onSubmit={async ({ name }, { setSubmitting }) => {
-              await handleRenameChannel(
-                selectedChannel.id,
-                name,
-                setSubmitting,
-              )
-            }}
-          >
-            {({ isSubmitting }) => (
-              <Form className="p-3">
-                <label
-                  htmlFor="rename-channel-name"
-                  className="form-label"
-                >
-                  {t('channels.placeholder')}
-                </label>
-
-                <Field
-                  id="rename-channel-name"
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  autoFocus
-                />
-
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-danger mt-2"
-                />
-
-                <div className="text-end mt-3">
-                  <Button type="submit" disabled={isSubmitting}>
-                    {t('channels.save')}
-                  </Button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        )}
-      </Modal>
-
-      {/* Delete Channel Modal */}
-      <Modal show={showDelete} onHide={closeDelete} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('channels.delete')}</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          {t('channels.deleteConfirm', {
-            name: selectedChannel?.name,
-          })}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeDelete}>
-            {t('channels.cancel')}
-          </Button>
-
-          <Button
-            variant="danger"
-            onClick={() => handleDeleteChannel(selectedChannel.id)}
-          >
-            {t('channels.delete')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Модалки */}
+      <AddChannelModal 
+        show={showAdd} 
+        handleClose={closeAdd} 
+        channels={channels} 
+        t={t} 
+        handleAddChannel={handleAddChannel} 
+      />
+      <RenameChannelModal 
+        show={showRename} 
+        handleClose={closeRename} 
+        channels={channels.filter(c => c.id !== selectedChannel?.id)} 
+        selectedChannel={selectedChannel} 
+        t={t} 
+        handleRenameChannel={handleRenameChannel} 
+      />
+      <DeleteChannelModal 
+        show={showDelete} 
+        handleClose={closeDelete} 
+        selectedChannel={selectedChannel} 
+        t={t} 
+        handleDeleteChannel={handleDeleteChannel} 
+      />
     </div>
   )
 }
