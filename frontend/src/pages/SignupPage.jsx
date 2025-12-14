@@ -6,35 +6,36 @@ import getSignupSchema from '../validation/signupSchema'
 const SignupPage = ({ setIsAuth }) => {
   const { t } = useTranslation()
 
-  const handleSignup = (setIsAuth, t) => async (values, { setStatus }) => {
-  
-  try {
-    const res = await fetch('/api/v1/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: values.username,
-        password: values.password,
-      }),
-    })
+const handleSignup = (setIsAuth, t) => async (values, { setStatus }) => {
 
-    if (res.status === 409) {
-      setStatus(t('signup.errors.usernameExists'))
-      return
+    try {
+      const res = await fetch('/api/v1/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      })
+
+      if (res.status === 409) {
+        setStatus(t('signup.errors.usernameExists'))
+        return
+      }
+
+      if (!res.ok) {
+        throw new Error('Ошибка регистрации')
+      }
+
+      const data = await res.json()
+      localStorage.setItem('userToken', data.token)
+      localStorage.setItem('username', data.username)
+      setIsAuth(true)
     }
-
-    if (!res.ok) {
-      throw new Error('Ошибка регистрации')
+    catch {
+      setStatus(t('signup.errors.general'))
     }
-
-    const data = await res.json()
-    localStorage.setItem('userToken', data.token)
-    localStorage.setItem('username', data.username)
-    setIsAuth(true)
-  } catch {
-    setStatus(t('signup.errors.general'))
   }
-}
 
   return (
     <div className="d-flex flex-column h-100">

@@ -23,9 +23,9 @@ const ChatPage = ({ setIsAuth }) => {
   const currentChannel = channels.find(ch => ch.id === currentChannelId)
   const channelMessages = messages.filter(m => m.channelId === currentChannelId)
   const messageCount = channelMessages.length
-  
+
   useEffect(() => {
-    if (currentChannelId) {  
+    if (currentChannelId) {
       messageInputRef.current?.focus()
     }
   }, [currentChannelId])
@@ -141,7 +141,8 @@ const ChatPage = ({ setIsAuth }) => {
               </div>
             )}
 
-            <div className="flex-grow-1 overflow-auto mb-3" 
+            <div
+              className="flex-grow-1 overflow-auto mb-3"
               style={{ maxHeight: '690px', scrollBehavior: 'smooth' }} // ограничиваем высоту блока сообщений, плавный скролл
             >
               {channelMessages.map((m, index) => (

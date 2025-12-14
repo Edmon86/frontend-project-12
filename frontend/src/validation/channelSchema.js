@@ -9,7 +9,7 @@ const getChannelSchema = (channels, t) =>
       .test(
         'unique',
         t('channels.errors.unique'),
-        (value) => !channels.some(c => c.name.toLowerCase() === value.toLowerCase()),
+        value => !channels.some(c => c.name.toLowerCase() === value.toLowerCase()),
       ),
   })
 

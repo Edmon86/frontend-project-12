@@ -56,7 +56,8 @@ const Channels = () => {
       else {
         toast.error(t('channels.addError'))
       }
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
@@ -75,7 +76,8 @@ const Channels = () => {
       else {
         toast.error(t('channels.renameError'))
       }
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
@@ -159,7 +161,7 @@ const Channels = () => {
         t={t}
         handleAddChannel={handleAddChannel}
       />
-      <RenameChannelModal 
+      <RenameChannelModal
         show={showRename}
         handleClose={closeRename}
         channels={channels.filter(c => c.id !== selectedChannel?.id)}
@@ -167,7 +169,7 @@ const Channels = () => {
         t={t}
         handleRenameChannel={handleRenameChannel}
       />
-      <DeleteChannelModal 
+      <DeleteChannelModal
         show={showDelete}
         handleClose={closeDelete}
         selectedChannel={selectedChannel}

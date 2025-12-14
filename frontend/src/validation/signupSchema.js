@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-const getSignupSchema = (t) =>
+const getSignupSchema = t =>
   Yup.object({
     username: Yup.string()
       .required(t('signup.usernameRequired'))
