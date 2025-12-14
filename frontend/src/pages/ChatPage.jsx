@@ -134,13 +134,10 @@ const ChatPage = ({ setIsAuth }) => {
                 className="mb-3 pb-2"
                 style={{ borderBottom: '1px solid #dee2e6', fontWeight: 'bold', color: '#495057' }}
               >
-               <span> 
-                #
-                {currentChannel.name}
-               </span>
-               <span className="ms-2 text-muted">
-                • {t('messages.count', { count: messageCount })}
-               </span>
+                <div># {currentChannel.name}</div>
+                <div className="text-muted">
+                  {t('messages.count', { count: messageCount })}
+                </div>
               </div>
             )}
 
