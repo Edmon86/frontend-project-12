@@ -146,7 +146,7 @@ const ChatPage = ({ setIsAuth }) => {
 
             <div
               className="flex-grow-1 overflow-auto mb-3"
-              style={{ maxHeight: '690px', scrollBehavior: 'smooth' }} // ограничиваем высоту блока сообщений, плавный скролл
+              style={{ maxHeight: '660px', scrollBehavior: 'smooth' }} // ограничиваем высоту блока сообщений, плавный скролл
             >
               {channelMessages.map((m, index) => (
                 <div key={index} className="mb-2">
