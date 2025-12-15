@@ -18,12 +18,6 @@ const App = () => {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
-  // Тестовая ошибка для Rollbar после рендера
-  useEffect(() => {
-    // Закомментируй после проверки Rollbar
-    // throw new Error('Rollbar test error')
-  }, [])
-
   return (
     <ErrorBoundary>
       <Routes>
